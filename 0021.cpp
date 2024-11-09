@@ -1,3 +1,105 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+
+        if(NULL == list1 && NULL == list2)
+            return NULL;
+
+        std::list<int> listOne = create_list(list1);
+        std::list<int> listTwo = create_list(list2);
+        listTwo.merge(listOne);
+
+        std::vector<int> vec = list_to_vector(listTwo);
+
+        ListNode* merged = createLL(vec);
+
+        return merged;
+
+        
+
+    }
+
+    std::list<int> vector_to_list(const std::vector<int> n)
+{
+	std::list<int> list1(n.size());
+	
+	int i = 0;
+	for(std::list<int>::iterator it = list1.begin();it != list1.end();it++)
+	{
+		*it = n[i];
+		i++;
+	}
+	
+	return list1;
+}
+
+std::vector<int> list_to_vector(const std::list<int> n)
+{
+	std::vector<int> vec(n.size());
+	
+	int i = 0;
+	for(auto it = n.begin();it != n.end();it++)
+	{
+		vec[i] = *it;
+		i++;
+	}
+	
+	return vec;
+}
+
+std::list<int> create_list(struct ListNode* first)
+{
+	std::vector<int> vec;
+    //struct ListNode *p  = (struct ListNode *)malloc(sizeof(struct ListNode));
+    ListNode *p  = new ListNode();
+    p = first;
+    while(p != NULL)
+    {
+        std::cout << p->val << '\n';
+		vec.push_back(p->val);
+        p = p->next;
+    }
+	
+	std::list<int> list1 = vector_to_list(vec);
+	
+	return list1;
+}
+
+struct ListNode* createLL(std::vector<int>& A)
+{
+    struct ListNode *temp , *last;
+    struct ListNode *one;
+    //one = (struct ListNode *)malloc(sizeof(struct ListNode));
+    one = new ListNode();
+    one->val = A[0];
+    one->next = NULL;
+    last = one;
+    //std::cout << one->val << '\n';
+    for (int i = 1; i < A.size(); i++)
+    {
+        //temp = (struct ListNode *)malloc(sizeof(struct ListNode));
+        temp = new ListNode();
+        temp->val = A[i];
+        temp->next = NULL;
+        last->next = temp;
+        last = temp;
+        //std::cout << last->val << '\n';
+    }
+
+    return one;
+}
+};
+//////////////////////
 #include <bits/stdc++.h>
 
 struct ListNode {
