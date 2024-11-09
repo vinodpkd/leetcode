@@ -1,3 +1,117 @@
+#include <bits/stdc++.h>
+
+struct ListNode {
+     int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(nullptr) {}
+      ListNode(int x, ListNode *next) : val(x), next(next) {}
+ };
+
+std::list<int> vector_to_list(const std::vector<int> n)
+{
+	std::list<int> list1(n.size());
+	
+	int i = 0;
+	for(std::list<int>::iterator it = list1.begin();it != list1.end();it++)
+	{
+		*it = n[i];
+		i++;
+	}
+	
+	return list1;
+}
+
+std::vector<int> list_to_vector(const std::list<int> n)
+{
+	std::vector<int> vec(n.size());
+	
+	int i = 0;
+	for(auto it = n.begin();it != n.end();it++)
+	{
+		vec[i] = *it;
+		i++;
+	}
+	
+	return vec;
+}
+
+std::list<int> create_list(struct ListNode* first)
+{
+	std::vector<int> vec;
+    struct ListNode *p  = (struct ListNode *)malloc(sizeof(struct ListNode));
+    p = first;
+    while(p != NULL)
+    {
+        std::cout << p->val << '\n';
+		vec.push_back(p->val);
+        p = p->next;
+    }
+	
+	std::list<int> list1 = vector_to_list(vec);
+	
+	return list1;
+}
+
+struct ListNode* createLL(std::vector<int>& A)
+{
+    struct ListNode *temp , *last;
+    struct ListNode *one;
+    one = (struct ListNode *)malloc(sizeof(struct ListNode));
+    one->val = A[0];
+    one->next = NULL;
+    last = one;
+    //std::cout << one->val << '\n';
+    for (int i = 1; i < A.size(); i++)
+    {
+        temp = (struct ListNode *)malloc(sizeof(struct ListNode));
+        temp->val = A[i];
+        temp->next = NULL;
+        last->next = temp;
+        last = temp;
+        //std::cout << last->val << '\n';
+    }
+
+    return one;
+}
+
+void displayLL(struct ListNode* p)
+{
+    
+    while(p != NULL)
+    {
+        std::cout << p->val << '\n';
+        p = p->next;
+    }
+}
+
+int main()
+{
+	std::vector<int> nums {-1,4,6};
+	
+	std::list<int> list1 = vector_to_list(nums);
+	
+	std::vector<int> nums2 {1,3,7};
+	
+	std::list<int> list2 = vector_to_list(nums2);
+	
+	list2.merge(list1);
+	
+	std::vector<int> vec2 = list_to_vector(list2);
+	
+	for(auto& x : vec2)
+		std::cout << x << ' ';
+	
+	struct ListNode *p  = (struct ListNode *)malloc(sizeof(struct ListNode));
+	p = createLL(vec2);
+	
+	std::cout << '\n';
+	displayLL(p);
+	
+	
+	return 0;
+	
+}
+/*
 #include <iostream>
 #include <vector>
 
