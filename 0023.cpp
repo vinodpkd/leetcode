@@ -1,14 +1,5 @@
-//Beats 100% in time
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
- */
+
+
 class Solution {
 public:
 
@@ -19,12 +10,38 @@ public:
 		if(1 == lists.size())
 			return lists[0];
 		
-		struct ListNode* combined = new ListNode();		
+		bool flag = false;
+		
+		std::multiset<int> mset {};
+		
+		for(int i = 0;i < lists.size();i++)
+		{
+			if(NULL == lists[i])
+                {flag = true;break;}
+
+            if(lists[i]->next == NULL)
+			{
+				mset.insert(lists[i]->val);
+			}
+			else
+			{
+				flag = true;
+				break;
+			}			
+		}
+		
+		if(false == flag)
+		{
+			struct ListNode* combined = createLL_from_set(mset);
+			return combined;
+		}
 		
 		for(int i = 1;i < lists.size();i++)
 		{
+			
 			lists[i] = mergeTwoLists(lists[i-1], lists[i]);
-		}
+			
+		}		
 			
 		return 	lists[lists.size()-1];
 	}
