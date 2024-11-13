@@ -1,4 +1,4 @@
-//229 Majority Element II
+//229 Majority Element II Beats 100% in time
 class Solution {
 public:
     vector<int> majorityElement(vector<int>& nums) {
