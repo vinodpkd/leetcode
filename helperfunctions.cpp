@@ -133,3 +133,44 @@ int main()
 		
 	return 0;
 }
+
+std::multiset<int> list_to_set(struct ListNode *first)
+{
+	std::multiset<int> set;
+    //struct ListNode *p  = (struct ListNode *)malloc(sizeof(struct ListNode));
+    ListNode *p  = new ListNode();
+    p = first;
+    while(p != NULL)
+    {
+        //std::cout << p->val << '\n';
+		set.insert(p->val);
+        p = p->next;
+    }
+	
+	return set;	
+}
+
+struct ListNode* createLL_from_set(std::multiset<int>& A)
+{
+    struct ListNode *temp , *last;
+    struct ListNode *one;
+    //one = (struct ListNode *)malloc(sizeof(struct ListNode));
+    one = new ListNode();
+	auto it = A.begin();
+    one->val = *it;
+    one->next = NULL;
+    last = one;
+    //std::cout << one->val << '\n';
+    for (it = std::next(A.begin());it != A.end();it++)
+    {
+        //temp = (struct ListNode *)malloc(sizeof(struct ListNode));
+        temp = new ListNode();
+        temp->val = *it;
+        temp->next = NULL;
+        last->next = temp;
+        last = temp;
+        //std::cout << last->val << '\n';
+    }
+
+    return one;
+}
