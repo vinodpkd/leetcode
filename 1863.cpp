@@ -61,3 +61,27 @@ std::vector<std::vector<int>> next_combination(std::vector<T>& data, int k) {
 	return all_comb;
 }
 };
+
+
+class Solution {
+public:
+    int subsetXORSum(vector<int>& nums) {
+        
+        
+	int n = nums.size();
+        int totalXORSum = 0;
+
+        for (int i = 0; i < (1 << n); ++i) { // Iterate through all possible subsets
+            int currentXOR = 0;
+            for (int j = 0; j < n; ++j) {
+                if ((i >> j) & 1) { // Check if j-th bit is set in i (indicating element inclusion)
+                    currentXOR ^= nums[j];
+                }
+            }
+            totalXORSum += currentXOR;
+        }
+        return totalXORSum;
+
+    }
+
+    
