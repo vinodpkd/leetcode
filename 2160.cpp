@@ -87,3 +87,38 @@ public:
 	return d;
 }
 };
+
+#python code to generate all permutations
+array = ['0', '1', '2', '3']
+
+all_perm = []
+
+from itertools import permutations
+
+for x in list(permutations('0123')):
+
+    array = list(x)
+    #print(x)
+    
+    n = len(array)
+
+    for partition_index in range(2 ** (n-1)):
+
+        # current partition, e.g., [['a', 'b'], ['c', 'd', 'e']]
+        partition = []
+
+        # used to accumulate the subsets, e.g., ['a', 'b']
+        subset = []
+
+        for position in range(n):
+
+            subset.append(array[position])
+
+            # check whether to "break off" a new subset
+            if 1 << position & partition_index or position == n-1:
+                partition.append(subset)
+                subset = []
+        if len(partition) == 2:
+            #print("partition")
+
+            print("{'"+"".join(partition[0])+"','"+"".join(partition[1])+"'},",end=" ")
