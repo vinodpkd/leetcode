@@ -27,6 +27,7 @@ public:
 	std::vector<int>::iterator iter = A.begin();
 	auto cond = [el](int num){return num == el;};
 	int index_sum {0};
+	//find all occurences of el in A
 	while ((iter = std::find_if(iter, A.end(), cond)) != A.end())
 	{
 		// Do something with iter
