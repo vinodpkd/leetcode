@@ -5,6 +5,26 @@ You have to rearrange the bits in such a way that the resulting binary number is
 Return a string representing the maximum odd binary number that can be created from the given combination.
 Note that the resulting string can have leading zeros.
   */
+class Solution { //beats 100% in speed
+public:
+    string maximumOddBinaryNumber(string s) {
+        int len = s.length();
+        //std::multiset<char> mset(s.begin(),s.end());
+        //int count = mset.count('1');
+        int count = std::count_if(s.begin(),s.end(),[](char c){return c == '1';});
+        if(1 == count && s[len-1] == '1')
+            return s;
+        std::string t(count-1,'1');
+        std::string z(len-count,'0');
+        
+        t = t + z + "1";
+
+        return t;
+        
+        
+    }
+};
+
 class Solution {
 public:
     string maximumOddBinaryNumber(string s) {
