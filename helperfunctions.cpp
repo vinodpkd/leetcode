@@ -42,8 +42,8 @@ public: */
     std::vector<int> ll2Vec(ListNode* l1)
     {
         std::vector<int> num{};
-        ListNode* t = new ListNode();
-        while(t != NULL)
+        ListNode* t = l1;
+        while(t != nullptr)
         {
             num.push_back(t->val);
             t = t->next;
@@ -51,26 +51,24 @@ public: */
         
         return num;
     }
-	
-	
-	ListNode* vec2ll(std::vector<int>& num)
+
+    ListNode* vec2ll(std::vector<int>& num)
     {
         
-        ListNode* t = new ListNode();
+        ListNode* t = new ListNode(num[0]);
 		ListNode* s = new ListNode();
 		s = t;
-		int i = 0;
+		int i = 1;
         while(i < num.size())
         {            
-			ListNode* u = new ListNode(num[i]);
-            t->next = u;
-			t = u;
+			ListNode* u = new ListNode(num[i]);            
+			t->next = u;
+            t = t->next;
 			i++;
         }
         
         return s;
     }
-    
 	
     int vec2num(std::vector<int>& num)
     {
