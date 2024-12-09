@@ -39,7 +39,7 @@ public: */
         
     }
 	*/
-    std::vector<int> ll2Vec(ListNode* l1)
+    std::vector<int> ll2vec(ListNode* l1)
     {
         std::vector<int> num{};
         ListNode* t = l1;
