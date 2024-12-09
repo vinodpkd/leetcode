@@ -54,6 +54,8 @@ public: */
 
     ListNode* vec2ll(std::vector<int>& num)
     {
+	    if(num.empty())
+            	return nullptr;
         
         ListNode* t = new ListNode(num[0]);
 		ListNode* s = new ListNode();
