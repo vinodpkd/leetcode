@@ -208,3 +208,24 @@ ListNode* reverseList(ListNode* head) {
         }
         return prev;
    }
+//split the string considering consecutive delimiters as one
+std::vector<std::string> split(std::string s, std::string delimiter) {
+    std::vector<std::string> res;
+    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+    
+    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
+        // Only add non-empty tokens
+        if (pos_end > pos_start) {
+            res.push_back(s.substr(pos_start, pos_end - pos_start));
+        }
+        pos_start = pos_end + delim_len;
+    }
+    
+    // Add the last token if it's not empty
+    if (pos_start < s.length()) {
+        res.push_back(s.substr(pos_start));
+    }
+    
+    return res;
+}
+};
