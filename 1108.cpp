@@ -34,7 +34,5 @@ public:
         }
 
         return s;
-
-        return s;
     }
 };
