@@ -4,6 +4,7 @@ class Solution {
 public:
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
         std::set<int> setOne {},setTwo{};
+        //std::set<int> setOne(nums1.begin(),nums1.end()),setTwo(nums2.begin(),nums2.end());
         int i = 0;
         while(i < nums1.size())
             {setOne.insert(nums1[i]);i++;}
