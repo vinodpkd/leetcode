@@ -32,3 +32,34 @@ public:
         return res;
     }
 };
+
+--------------
+    class Solution {
+public:
+    vector<int> minOperations(string boxes) {
+        int n = boxes.length();
+        vector<int> result(n);
+        
+        // Count balls and operations from left to right
+        int balls = 0;  // Count of balls encountered so far
+        int ops = 0;    // Operations needed for current position
+        
+        for (int i = 0; i < n; i++) {
+            result[i] += ops;  // Add operations needed from left side
+            balls += (boxes[i] == '1');  // Add current ball if present
+            ops += balls;  // Update operations for next position
+        }
+        
+        // Count balls and operations from right to left
+        balls = 0;
+        ops = 0;
+        
+        for (int i = n - 1; i >= 0; i--) {
+            result[i] += ops;  // Add operations needed from right side
+            balls += (boxes[i] == '1');  // Add current ball if present
+            ops += balls;  // Update operations for next position
+        }
+        
+        return result;
+    }
+};
