@@ -229,3 +229,109 @@ std::vector<std::string> split(std::string s, std::string delimiter) {
     return res;
 }
 };
+//Longest subarray (Two pointers)
+#include <bits/stdc++.h>
+
+int main()
+{
+	std::vector<int> arr{16,4,2,1,6,3,1,9,8};
+	int k = 15;
+	int left = 0, right = 0;
+	int r = 0, l = 0;
+	int maxLen{0};
+	int sum = 0;
+	
+	while(r < arr.size())
+	{		
+		sum += arr[r];
+		
+		while(sum > k)
+		{
+			sum = sum - arr[l];//Remove elements from left until sum <= k
+			l++;
+		}
+		
+		if(sum <= k)
+		{
+			if(maxLen < r-l+1)
+			{//maxLen = std::max(maxLen,r-l+1);
+				maxLen = r-l+1;
+				left = l, right = r;
+			}
+		}
+		r++;
+	}
+	
+	std::cout << "max len = " << maxLen << " left = " << left << " right = " << right << '\n';
+	
+	return 0;
+}
+/*
+//Brute force approach
+std::vector<int> arr{3,4,2,1,6,3,1,9,8};
+	int k = 15;
+	int left = 0, right = 0;
+	int maxLen{0};
+	
+	for(int i = 0;i < arr.size();i++)
+	{
+		int sum = arr[i];
+		
+		int j = i;
+		
+		do
+		{
+			
+			if(sum <= k)
+			{
+				int len = j-i+1;
+				if(len > maxLen)
+				{
+					maxLen = len;
+					right = j;
+					left = i;
+				}
+			}
+			j++;
+			sum += arr[j];
+			
+		}
+		while(j < arr.size());
+	}
+	
+	std::cout << "max len = " << maxLen << " left = " << left << " right = " << right << '\n';
+	
+	return 0;
+}
+*/
+
+//Leetcode 560. Subarray Sum Equals K , Brute force
+/*
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+A subarray is a contiguous non-empty sequence of elements within an array.
+*/
+/*
+class Solution {
+public:
+    int subarraySum(vector<int>& arr, int k) {
+        int count{0};
+	
+	for(int i = 0;i < arr.size();i++)
+	{
+        int sum = arr[i];
+		for(int j = i;j < arr.size();j++)
+		{
+			//int sum = std::accumulate(arr.begin()+i,arr.begin()+j+1,0);
+			if(sum == k)
+			{
+				count++;
+			}
+            if(j+1 == arr.size())
+                break;
+            sum += arr[j+1];
+		}
+	}
+    return count;
+    }
+};
+*/
