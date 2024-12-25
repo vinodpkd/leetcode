@@ -335,3 +335,37 @@ public:
     }
 };
 */
+//Constant window (Two pointers)
+#include <bits/stdc++.h>
+
+int main()
+{
+	std::vector<int> arr{3,-4,2,-1,6,3,1,-9,-8};
+	int k = 4;
+	int l = 0, r = k, sum, maxSum;
+	int left = l,right = r;
+	
+	sum = std::accumulate(arr.begin(),arr.begin()+k,0);
+	maxSum = sum;
+	
+	std::cout << "l = " << l << " sum = " << sum << '\n';
+	
+	while(r < arr.size())
+	{		
+		r++;
+		sum = sum + arr[r] - arr[l];
+		l++;
+		
+		std::cout << "sum = " << sum << '\n';
+		
+		if(maxSum < sum)
+		{
+			maxSum = sum;
+			left = l;
+			right = r;
+		}
+	}
+	
+	std::cout << "max sum = " << maxSum << " left = " << left << " right = " << right << '\n';
+	
+}
