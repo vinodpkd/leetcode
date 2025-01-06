@@ -71,3 +71,72 @@ public:
         return s;
     }
 };
+---------------------------
+ListNode* removeNode(ListNode* head, int val)
+{
+	while(head && head->val == val)
+	{
+		ListNode* temp = head;
+		head = head->next;
+		delete temp;
+	}
+
+	ListNode* current = head;
+	while(current && current->next)
+	{
+		if(current->next->val == val)
+		{
+			ListNode* temp = current->next;
+			current->next = current->next->next;
+			delete temp;
+		}
+		else
+		{
+			current = current->next;
+		}
+	}
+
+	return head;
+}
+
+
+int main()
+{
+	//std::vector<int> arr = {5,1,2, 5,5, 8, 7,5,5};
+	//std::vector<int> arr = {5,0,5};
+    // Create a linked list with the values from the vector
+	
+	std::vector<int> arr = {1,2,3,4,5};
+	ListNode* head = new ListNode(arr[0]);
+	head->next = new ListNode(arr[1]);
+    head->next->next = new ListNode(arr[2]);	
+    head->next->next->next = new ListNode(arr[3]);
+	head->next->next->next->next = new ListNode(arr[4]);
+	
+	std::vector<int> nums = {1,2,3};
+	
+	for(int& x : nums)
+	{
+		head = removeNode(head,x);
+	}
+	
+	printLL_1(head);
+	
+	/*
+    Node* head = new Node(arr[0]);
+	head->next = new Node(arr[1]);
+    head->next->next = new Node(arr[2]);	
+    head->next->next->next = new Node(arr[3]);
+	head->next->next->next->next = new Node(arr[4]);
+	head->next->next->next->next->next = new Node(arr[5]);
+	head->next->next->next->next->next->next = new Node(arr[6]);
+	head->next->next->next->next->next->next->next = new Node(arr[7]);
+	head->next->next->next->next->next->next->next->next = new Node(arr[8]);
+	*/
+	
+	//head = deleteAllOccurences(head,5);	
+	
+	//printLL(head);
+	
+	return 0;
+}
