@@ -369,3 +369,25 @@ int main()
 	std::cout << "max sum = " << maxSum << " left = " << left << " right = " << right << '\n';
 	
 }
+
+//Delete all occurences of a value from a linked list
+ode* deleteValue(Node* head, int value) {
+	while (head && head->data == value) {
+		Node* temp = head;
+		head = head->next;
+		delete temp;
+	}
+
+	Node* current = head;
+	while (current && current->next) {//What is this for?
+		if (current->next->data == value) {
+			Node* temp = current->next;
+			current->next = current->next->next;
+			delete temp;
+		} else {
+			current = current->next;
+		}
+	}
+	
+	return head;
+}
