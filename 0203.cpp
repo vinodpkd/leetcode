@@ -1,4 +1,4 @@
-203. Remove Linked List Elements
+203. Remove Linked List Elements 100% beats in time
 /*
 Given the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val == val, and return the new head.
 */
@@ -13,6 +13,45 @@ Given the head of a linked list and an integer val, remove all the nodes of the 
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        while(head && head->val == val)
+	{
+		ListNode* temp = head;
+		head = head->next;
+		delete temp;
+	}
+	
+	ListNode* current = head;
+	while(current && current->next)
+	{
+		if(current->next->val == val)
+		{
+			ListNode* temp = current->next;
+			current->next = current->next->next;
+			delete temp;
+		}
+		else
+		{
+			current = current->next;
+		}
+	}
+	
+	return head;
+    }
+};
+-----------------
 class Solution {
 public:
     ListNode* removeElements(ListNode* head, int val) {
