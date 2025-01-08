@@ -391,3 +391,18 @@ ode* deleteValue(Node* head, int value) {
 	
 	return head;
 }
+
+int generateRandomInteger(int minm,int maxm)
+{
+	//int min = 0;
+    //int max = freq[target].size()-1;
+
+    // Initialize a random number generator
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(minm, maxm);
+
+    // Generate random number in the integer range [minm, maxm]
+    int randomIndex = distrib(gen);
+	return randomIndex;
+}
