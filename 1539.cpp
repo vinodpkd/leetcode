@@ -18,9 +18,9 @@ public:
             }
             i = nums[j]+1;
         }
-        for(int x : m)
-            std::cout << x << ' ';
-        std::cout << '\n';
+        //for(int x : m)
+        //    std::cout << x << ' ';
+        //std::cout << '\n';
         if(m.size() < k)
             return nums[nums.size()-1] + (k - m.size());
         
