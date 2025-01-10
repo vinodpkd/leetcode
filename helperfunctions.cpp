@@ -466,3 +466,33 @@ int main()
 	
 	return 0;
 }
+//Two pointer problem sort array of 0s and 1s
+#include<bits/stdc++.h>
+
+int main()
+{
+	std::vector<int> arr{0,1,1,0,1};
+	
+	int i = 0;
+	int j = arr.size()-1;
+	
+	while(i < j)
+	{
+		while(arr[i] == 0)
+			i++;
+		while(arr[j] == 1)
+			j--;
+		
+		//std::cout << i << ' ' << j << ' ' << arr[i] << ' ' << arr[j] << '\n';
+		if(i < j)
+			std::swap(arr[i],arr[j]);
+	}
+	
+	//for(int& x : arr)
+	//	std::cout << x << ' ';
+	
+	//std::cout << '\n';
+	
+	
+	return 0;
+}
