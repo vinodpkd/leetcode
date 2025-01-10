@@ -406,3 +406,63 @@ int generateRandomInteger(int minm,int maxm)
     int randomIndex = distrib(gen);
 	return randomIndex;
 }
+
+-----------------
+	Two pointer problem get the indices such that sum of indices is minimum
+	#include<bits/stdc++.h>
+
+bool covered(std::vector<std::vector<int>>& indices,int low,int high)
+{
+	for(int i = 0;i < indices.size();i++)
+	{
+		if(indices[i][0] == low && indices[i][1] == high)
+			return true;
+	}
+	
+	return false;
+}
+
+int main()
+{
+	std::vector<int> arr{1,3,7,9,13,21,34,26};
+	int low = 0;
+	int high = arr.size()-1;
+	int sum = 47;
+	int minIndex = INT_MAX;
+	std::vector<std::vector<int>> indices{};
+	
+	while(low < high)
+	{
+		if(covered(indices,low,high))
+		{
+			low = 0;
+			high = arr.size()-1;
+			continue;
+		}
+		
+		if(arr[low] + arr[high] == sum)
+		{
+			if(low + high < minIndex)
+			{
+				minIndex = low + high;
+			}
+			arr[low] = sum + 1; arr[high] = sum + 1;
+			std::cout << low << ' ' << high << ' ' << minIndex << '\n';
+			//break;
+			//low++;
+			indices.push_back({low,high});
+			low = 0;
+			high = arr.size()-1;
+		}
+		else if(arr[low] + arr[high] > sum)
+		{
+			high--;
+		}
+		else
+		{
+			low++;
+		}
+	}
+	
+	return 0;
+}
