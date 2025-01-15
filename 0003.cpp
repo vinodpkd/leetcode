@@ -63,3 +63,61 @@ Space Complexity Analysis:
 Therefore, the overall space complexity is O(k), where k is the size of the character set.
 
 Note that this implementation could be optimized to achieve O(n) time complexity by using a different approach, such as the sliding window technique with a hash map storing character positions.
+-----------------
+    Two pointers solution
+// Array to store the last index
+    // where each character occurred
+    int hash[256];
+    
+    // Initialize all elements
+    // of the array to -1
+    fill_n(hash, 256, -1);
+    
+    // Get the length of
+    // the input string
+    int n = s.size();
+    
+    // Pointers to keep track
+    // of the current substring
+    int l = 0, r = 0;
+    
+    // Variable to store the maximum
+    // length of substring without
+    // repeating characters
+    int maxLen = 0;
+    
+    // Loop until the right pointer
+    // reaches the end of the string
+    while (r < n) {
+        // If the current character
+        // has been seen before
+        if (hash[s[r]] != -1) {
+            // If its last occurrence is
+            // within the current substring
+            if (hash[s[r]] >= l) {
+                // Move the left pointer to the
+                // position after the last occurrence
+                // of the current character
+                l = hash[s[r]] + 1;
+            }
+        }
+        
+        // Calculate the length
+        // of the current substring
+        int len = r - l + 1;
+        
+        // Update the maximum
+        // length if needed
+        maxLen = max(len, maxLen);
+        
+        // Update the last occurrence
+        // index of the current character
+        hash[s[r]] = r;
+        
+        // Move the right pointer
+        // to the next position
+        r++;
+    }
+    // Return the maximum length of
+    // substring without repeating characters
+    return maxLen;
