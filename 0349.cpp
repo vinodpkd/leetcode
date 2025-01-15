@@ -18,3 +18,47 @@ std::set_intersection(setOne.begin(),setOne.end(),setTwo.begin(),setTwo.end(), s
         return inter;
     }
 };
+
+-------
+    //Two pointers solution 
+    class Solution {
+public:
+    vector<int> intersection(vector<int>& a, vector<int>& b) {
+        std::ranges::sort(a);
+        std::ranges::sort(b);
+        std::vector<int> res{};
+	
+	int i = 0;
+	int j = 0;
+	
+	while(i < a.size() && j < b.size())
+	{
+		if(a[i] > b[j])
+		{
+			j++;
+            continue;			
+		}
+		
+		if(a[i] == b[j])
+		{if(res.empty())
+				res.push_back(a[i]);
+			else
+			{
+				if(res.back() != a[i])
+					res.push_back(a[i]);
+			}
+			
+			i++;
+			j++;
+			continue;			
+		}
+		
+		if(a[i] < b[j])
+		{
+			i++;			
+		}
+	}
+
+    return res;
+    }
+};
