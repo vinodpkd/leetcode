@@ -28,7 +28,7 @@ public:
         return nums.size();
     }
 -----------
-Two pointers
+//Another solution
 class Solution {
 public:
     int removeDuplicates(vector<int>& a) {
@@ -49,12 +49,30 @@ public:
 };
 };
 ---------------
-Two pointers
+//Another solution
 class Solution {
 public:
     int removeDuplicates(vector<int>& a) {
         std::set<int> s(a.begin(),a.end());
         std::copy(s.begin(),s.end(),a.begin());
         return s.size();
+    }
+};
+--------------
+//Two pointers
+class Solution {
+public:
+    int removeDuplicates(vector<int>& arr) {
+        
+          int i = 0;
+  for (int j = 1; j < arr.size(); j++) {
+    if (arr[i] != arr[j]) {
+      i++;
+      arr[i] = arr[j];
+    }
+  }
+  return i + 1;
+
+        
     }
 };
