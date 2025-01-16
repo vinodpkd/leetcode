@@ -27,4 +27,24 @@ public:
 
         return nums.size();
     }
+-----------
+Two pointers
+class Solution {
+public:
+    int removeDuplicates(vector<int>& a) {
+        int i = 0;
+	
+	while(i+1 < a.size())
+	{
+		//j = i;
+		while(i+1 < a.size() && a[i] == a[i+1])
+		{
+			a.erase(a.begin()+i);
+			//std::cout << a[i] << ' ' << a[i+1] << '\n';			
+		}
+		i++;
+	}
+    return a.size();
+    }
+};
 };
