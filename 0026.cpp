@@ -48,3 +48,13 @@ public:
     }
 };
 };
+---------------
+Two pointers
+class Solution {
+public:
+    int removeDuplicates(vector<int>& a) {
+        std::set<int> s(a.begin(),a.end());
+        std::copy(s.begin(),s.end(),a.begin());
+        return s.size();
+    }
+};
