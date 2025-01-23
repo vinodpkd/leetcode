@@ -5,6 +5,42 @@ Between every pair of adjacent nodes, insert a new node with a value equal to th
 Return the linked list after insertion.
 The greatest common divisor of two numbers is the largest positive integer that evenly divides both numbers.
 */
+----------
+	/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* insertGreatestCommonDivisors(ListNode* head) {
+        if(head == nullptr || head->next == nullptr)
+            return head;
+
+       ListNode* temp = head;
+        while(temp->next)
+        {
+            int a = std::gcd(temp->val,temp->next->val);
+            
+            ListNode* mid = new ListNode(a);
+            
+            
+            mid->next = temp->next;
+			temp->next = mid;
+            
+			temp = mid->next;
+            //std::cout << a << ' ';
+        }
+
+        return head;
+    }
+};
+--------------
 /**
  * Definition for singly-linked list.
  * struct ListNode {
