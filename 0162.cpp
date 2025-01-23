@@ -17,3 +17,11 @@ int main()
 
 	return 0;
 }
+---------------
+	class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        auto it = std::is_sorted_until(nums.begin(),nums.end());
+        return std::distance(nums.begin(),it)-1;
+    }
+};
