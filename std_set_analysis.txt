@@ -1,0 +1,868 @@
+Here are the main features of std::set:
+
+1. Ordered Storage:
+   - Automatically maintains elements in sorted order
+   - Uses a balanced binary search tree (typically Red-Black tree) internally
+
+2. Unique Elements:
+   - Only stores unique elements
+   - Duplicate insertions are automatically rejected
+   - Each element serves as its own key
+
+3. Key Operations and Complexity:
+   - Insertion: O(log n) binary search and insert because of sorted nature.
+   - Deletion: O(log n)
+   - Search: O(log n)
+   - Size: O(1)
+
+4. Iterator Support:
+   - Provides bidirectional iterators
+   - Supports begin(), end(), rbegin(), rend() Instead of std::greater<int> rbegin and rend can be used to print in the reverse order.Is there any siutation that std::greater must be defined as a comparator which rbegin and rend cannot meet the requirements.
+   - Iterator traversal yields elements in sorted order
+
+5. Element Access:
+   - find() to search for elements, tend to be faster than count.
+   - count() to check element existence (returns 0 or 1). Why count is required?
+   - lower_bound() and upper_bound() for range queries . Is there a purpose for sets. What is the lower_bound value if element does not exist
+   - equal_range() to get range of equivalent elements. Is there a purpose for sets. What is the equal_range value if element does not exist
+
+6. Modifiers:
+   - insert() to add elements. What is the intersection of vector functions and set functions.
+   - erase() to remove elements
+   - clear() to remove all elements
+   - emplace() for in-place construction
+   - swap() to exchange contents with another set. Is there a vector function for this? Yes there is.
+
+7. Capacity Operations:
+   - size() returns number of elements
+   - empty() checks if container is empty. There is a vector function for this.
+   - max_size() returns maximum potential size. There is a vector function for this.
+
+8. Comparisons:
+   - Custom comparator support through template parameter
+   - Default uses std::less<T>
+   - Supports all comparison operators (<, <=, >, >=, ==, !=)
+
+I'll create a simpler program that demonstrates these operations without the timing measurements.
+
+
+
+```cpp
+#include <iostream>
+#include <set>
+
+int main() {
+    // Create an empty set
+    std::set<int> numbers;
+    
+    // Insertion - O(log n)
+    std::cout << "Inserting elements...\n";
+    numbers.insert(30);
+    numbers.insert(10);
+    numbers.insert(20);
+    numbers.insert(40);
+    
+    // Print current set
+    std::cout << "Set contents: ";
+    for(const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << "\n\n";
+    
+    // Search - O(log n)
+    std::cout << "Searching for elements...\n";
+    int searchKey = 20;
+    auto it = numbers.find(searchKey);
+    if(it != numbers.end()) {
+        std::cout << "Found " << searchKey << "\n";
+    } else {
+        std::cout << searchKey << " not found\n";
+    }
+    
+    // Try searching for non-existent element
+    searchKey = 25;
+    if(numbers.find(searchKey) != numbers.end()) {
+        std::cout << "Found " << searchKey << "\n";
+    } else {
+        std::cout << searchKey << " not found\n";
+    }
+    std::cout << "\n";
+    
+    // Size - O(1)
+    std::cout << "Current size of set: " << numbers.size() << "\n\n";
+    
+    // Deletion - O(log n)
+    std::cout << "Deleting elements...\n";
+    int deleteKey = 20;
+    if(numbers.erase(deleteKey)) {
+        std::cout << "Deleted " << deleteKey << "\n";
+    } else {
+        std::cout << "Couldn't delete " << deleteKey << " (not found)\n";
+    }
+    
+    // Try deleting non-existent element
+    deleteKey = 25;
+    if(numbers.erase(deleteKey)) {
+        std::cout << "Deleted " << deleteKey << "\n";
+    } else {
+        std::cout << "Couldn't delete " << deleteKey << " (not found)\n";
+    }
+    
+    // Final size and contents
+    std::cout << "\nFinal size: " << numbers.size() << "\n";
+    std::cout << "Final set contents: ";
+    for(const auto& num : numbers) {
+        std::cout << num << " ";
+    }
+    std::cout << "\n";
+    
+    return 0;
+}
+
+```
+
+This program demonstrates:
+1. Insertion using insert()
+2. Searching using find()
+3. Getting size using size()
+4. Deletion using erase()
+
+The output will show:
+- Elements are automatically kept in sorted order
+- Successful and unsuccessful searches
+- Successful and unsuccessful deletions
+- The size before and after operations
+
+Each operation's time complexity is demonstrated through its usage, though without explicit timing measurements. Notice how the 
+set maintains sorting order automatically when we insert elements in random order (30, 10, 20, 40).
+
+```cpp
+#include <iostream>
+#include <set>
+
+int main() {
+    // Create and populate a set
+    std::set<int> numbers = {50, 20, 80, 10, 30, 70, 40, 60};
+    
+    // Forward iteration using begin() and end()
+    std::cout << "Forward iteration using begin() and end():\n";
+    for(auto it = numbers.begin(); it != numbers.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n\n";
+    
+    // Reverse iteration using rbegin() and rend()
+    std::cout << "Reverse iteration using rbegin() and rend():\n";
+    for(auto rit = numbers.rbegin(); rit != numbers.rend(); ++rit) {
+        std::cout << *rit << " ";
+    }
+    std::cout << "\n\n";
+    
+    // Demonstrating bidirectional iteration
+    std::cout << "Bidirectional iteration demonstration:\n";
+    auto it = numbers.begin();
+    
+    // Move iterator forward
+    std::cout << "Moving forward: ";
+    for(int i = 0; i < 3; ++i) {
+        std::cout << *it << " ";
+        ++it;
+    }
+    std::cout << "\n";
+    
+    // Move iterator backward
+    std::cout << "Moving backward: ";
+    for(int i = 0; i < 3; ++i) {
+        --it;
+        std::cout << *it << " ";
+    }
+    std::cout << "\n\n";
+    
+    // Using range-based for loop (which uses iterators internally)
+    std::cout << "Range-based for loop:\n";
+    for(const auto& number : numbers) {
+        std::cout << number << " ";
+    }
+    std::cout << "\n\n";
+    
+    // Finding and iterating from a specific point
+    std::cout << "Iterating from a specific point:\n";
+    auto start_point = numbers.find(30);
+    if(start_point != numbers.end()) {
+        std::cout << "Elements from 30 onwards: ";
+        for(auto it = start_point; it != numbers.end(); ++it) {
+            std::cout << *it << " ";
+        }
+        std::cout << "\n";
+        
+        std::cout << "Elements from 30 backwards: ";
+        while(it != numbers.begin()) {
+            --it;
+            std::cout << *it << " ";
+        }
+        std::cout << "\n";
+    }
+    
+    return 0;
+}
+
+```
+
+This program demonstrates all key aspects of std::set iterators:
+
+1. Forward Iteration:
+   - Uses begin() and end() to traverse elements in ascending order
+   - Elements are automatically sorted regardless of insertion order
+
+2. Reverse Iteration:
+   - Uses rbegin() and rend() to traverse elements in descending order
+   - Shows how reverse iterators work
+
+3. Bidirectional Movement:
+   - Shows how iterators can move both forward (++) and backward (--)
+   - Demonstrates the bidirectional nature of set iterators
+
+4. Range-based for loop:
+   - Shows modern C++ syntax that uses iterators behind the scenes
+   - Provides a simpler way to iterate through all elements
+
+5. Partial Range Iteration:
+   - Shows how to find a specific element and iterate from that point
+   - Demonstrates both forward and backward iteration from a specific position
+
+The output will show that regardless of how we iterate through the set, the elements are always accessed in sorted order.
+
+```cpp
+#include <iostream>
+#include <set>
+
+void printSet(const std::set<int>& s) {
+    for(const auto& element : s) {
+        std::cout << element << " ";
+    }
+    std::cout << "\n";
+}
+
+int main() {
+    // Create and initialize a set
+    std::set<int> numbers = {10, 20, 30, 40, 50, 60, 70, 80};
+    
+    std::cout << "Set contents: ";
+    printSet(numbers);
+    std::cout << "\n";
+
+    // 1. find() - Search for elements
+    std::cout << "1. Using find():\n";
+    int searchValue = 30;
+    auto it = numbers.find(searchValue);
+    if(it != numbers.end()) {
+        std::cout << "Found " << *it << "\n";
+    } else {
+        std::cout << searchValue << " not found\n";
+    }
+
+    // Search for non-existent element
+    searchValue = 35;
+    it = numbers.find(searchValue);
+    if(it != numbers.end()) {
+        std::cout << "Found " << *it << "\n";
+    } else {
+        std::cout << searchValue << " not found\n";
+    }
+    std::cout << "\n";
+
+    // 2. count() - Check element existence
+    std::cout << "2. Using count():\n";
+    std::cout << "Count of 30: " << numbers.count(30) << "\n";  // Will return 1
+    std::cout << "Count of 35: " << numbers.count(35) << "\n";  // Will return 0
+    std::cout << "\n";
+
+    // 3. lower_bound() and upper_bound()
+    std::cout << "3. Using lower_bound() and upper_bound():\n";
+    
+    // lower_bound returns iterator to first element not less than value
+    auto lower = numbers.lower_bound(35);
+    std::cout << "lower_bound(35) points to: " << *lower << "\n";
+    
+    // upper_bound returns iterator to first element greater than value
+    auto upper = numbers.upper_bound(35);
+    std::cout << "upper_bound(35) points to: " << *upper << "\n";
+    
+    // Print range between bounds
+    std::cout << "Elements in range [35, 55]: ";
+    for(auto it = numbers.lower_bound(35); it != numbers.upper_bound(55); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n\n";
+
+    // 4. equal_range() - Get range of equivalent elements
+    std::cout << "4. Using equal_range():\n";
+    auto range = numbers.equal_range(40);
+    std::cout << "equal_range(40):\n";
+    std::cout << "Begin of range points to: " << *range.first << "\n";
+    std::cout << "End of range points to: " << *range.second << "\n";
+    
+    // Demonstrate that equal_range combines lower_bound and upper_bound
+    std::cout << "\nVerifying equal_range() is same as lower_bound() and upper_bound():\n";
+    std::cout << "Using equal_range(): " << *range.first << " to " << *range.second << "\n";
+    std::cout << "Using lower/upper_bound(): " << *numbers.lower_bound(40) 
+              << " to " << *numbers.upper_bound(40) << "\n";
+
+    return 0;
+}
+
+```
+
+This program demonstrates all four main element access methods in std::set:
+
+1. find():
+   - Searches for a specific element
+   - Returns an iterator to the element if found
+   - Returns end() if element not found
+
+2. count():
+   - Returns 1 if element exists
+   - Returns 0 if element doesn't exist
+   - Useful for quick existence checks
+
+3. lower_bound() and upper_bound():
+   - lower_bound(x) returns iterator to first element >= x
+   - upper_bound(x) returns iterator to first element > x
+   - Can be used together to find elements in a range
+
+4. equal_range():
+   - Returns a pair of iterators defining a range
+   - First iterator is equivalent to lower_bound()
+   - Second iterator is equivalent to upper_bound()
+   - Useful for finding all elements equal to a value (though in a set, there can be at most one)
+
+```cpp
+#include <iostream>
+#include <set>
+
+// Utility function to print set contents
+void printSet(const std::set<int>& s, const std::string& label) {
+    std::cout << label << ": ";
+    for(const auto& element : s) {
+        std::cout << element << " ";
+    }
+    std::cout << "\n";
+}
+
+class Point {
+public:
+    int x, y;
+    
+    Point(int x_val, int y_val) : x(x_val), y(y_val) {
+        std::cout << "Constructing Point(" << x << "," << y << ")\n";
+    }
+    
+    bool operator<(const Point& other) const {
+        return (x < other.x) || (x == other.x && y < other.y);
+    }
+};
+
+int main() {
+    // 1. insert() demonstration
+    std::cout << "1. Insert Operations:\n";
+    std::set<int> numbers;
+    
+    // Single element insert
+    auto result = numbers.insert(10);
+    std::cout << "Inserted 10: " << (result.second ? "success" : "failed") << "\n";
+    
+    // Duplicate insert attempt
+    result = numbers.insert(10);
+    std::cout << "Attempted duplicate insert of 10: " << (result.second ? "success" : "failed") << "\n";
+    
+    // Insert with hint
+    auto it = numbers.end();
+    numbers.insert(it, 20);  // Insert with hint
+    
+    // Insert multiple elements
+    numbers.insert({30, 40, 50});
+    printSet(numbers, "After insertions");
+    std::cout << "\n";
+
+    // 2. erase() demonstration
+    std::cout << "2. Erase Operations:\n";
+    // Erase by value
+    size_t count = numbers.erase(30);
+    std::cout << "Erased " << count << " element(s) with value 30\n";
+    
+    // Erase by iterator
+    it = numbers.find(40);
+    if(it != numbers.end()) {
+        numbers.erase(it);
+    }
+    
+    // Erase range
+    it = numbers.find(20);
+    numbers.erase(it, numbers.end());
+    printSet(numbers, "After erasures");
+    std::cout << "\n";
+
+    // 3. clear() demonstration
+    std::cout << "3. Clear Operation:\n";
+    numbers.clear();
+    std::cout << "Size after clear(): " << numbers.size() << "\n\n";
+
+    // 4. emplace() demonstration
+    std::cout << "4. Emplace Operations:\n";
+    std::set<Point> points;
+    
+    // Emplace constructs object in-place
+    points.emplace(1, 2);
+    points.emplace(3, 4);
+    
+    std::cout << "Points set size: " << points.size() << "\n\n";
+
+    // 5. swap() demonstration
+    std::cout << "5. Swap Operation:\n";
+    std::set<int> set1 = {1, 2, 3};
+    std::set<int> set2 = {4, 5, 6};
+    
+    printSet(set1, "Set1 before swap");
+    printSet(set2, "Set2 before swap");
+    
+    set1.swap(set2);
+    
+    printSet(set1, "Set1 after swap");
+    printSet(set2, "Set2 after swap");
+
+    return 0;
+}
+
+```
+
+This program demonstrates all five modifier operations:
+
+1. insert():
+   - Single element insertion with success/failure feedback
+   - Insertion with position hint
+   - Multiple element insertion
+   - Shows how duplicates are handled
+
+2. erase():
+   - Removing by value
+   - Removing by iterator
+   - Removing a range of elements
+   - Returns count of elements removed
+
+3. clear():
+   - Removes all elements
+   - Resets size to 0
+
+4. emplace():
+   - Constructs element in-place
+   - More efficient than insert for complex objects
+   - Demonstrates with a custom Point class
+
+5. swap():
+   - Exchanges contents between two sets
+   - Efficient operation (typically just swaps pointers)
+   
+```cpp
+#include <iostream>
+#include <set>
+#include <iomanip>
+
+int main() {
+    // Create an empty set
+    std::set<int> numbers;
+    
+    // 1. empty() demonstration
+    std::cout << "1. Testing empty():\n";
+    std::cout << "Is set empty? " << (numbers.empty() ? "Yes" : "No") << "\n";
+    
+    // Add some elements
+    numbers.insert({10, 20, 30, 40, 50});
+    std::cout << "After inserting elements, is set empty? " 
+              << (numbers.empty() ? "Yes" : "No") << "\n\n";
+    
+    // 2. size() demonstration
+    std::cout << "2. Testing size():\n";
+    std::cout << "Current size: " << numbers.size() << "\n";
+    
+    // Add and remove elements to show size changes
+    numbers.insert(60);
+    std::cout << "Size after inserting 60: " << numbers.size() << "\n";
+    
+    numbers.erase(30);
+    std::cout << "Size after removing 30: " << numbers.size() << "\n\n";
+    
+    // 3. max_size() demonstration
+    std::cout << "3. Testing max_size():\n";
+    std::cout << "Maximum possible size: " << numbers.max_size() << "\n";
+    
+    // Demonstrate relative sizes
+    std::cout << "\nSize comparisons:\n";
+    std::cout << "Current size: " << std::setw(20) << numbers.size() << " elements\n";
+    std::cout << "Maximum size: " << std::setw(20) << numbers.max_size() << " elements\n";
+    
+    // Clear the set and verify size
+    numbers.clear();
+    std::cout << "\nAfter clearing the set:\n";
+    std::cout << "Size: " << numbers.size() << "\n";
+    std::cout << "Is empty? " << (numbers.empty() ? "Yes" : "No") << "\n";
+    
+    return 0;
+}
+
+```
+
+This program demonstrates all three capacity operations:
+
+1. empty():
+   - Returns true if the set has no elements
+   - Returns false if the set contains any elements
+   - Quick way to check if container is empty
+
+2. size():
+   - Returns the current number of elements
+   - Updates automatically as elements are added or removed
+   - Always O(1) complexity
+
+3. max_size():
+   - Returns the theoretical maximum number of elements
+   - Depends on system and implementation
+   - Usually a very large number
+
+The program shows:
+- How these functions behave with an empty set
+- Changes in size as elements are added and removed
+- The relationship between current size and maximum size
+- How clearing affects the capacity operations
+
+```cpp project="SetComparisons" file="set_comparisons.cpp" version=1
+#include <iostream>
+#include <set>
+#include <string>
+#include <functional>
+
+// Custom comparator (lexicographical string comparison)
+struct LexCompare {
+    bool operator()(const std::string& a, const std::string& b) const {
+        return a < b;
+    }
+};
+
+// Custom comparator (greater than for integers)
+struct GreaterThan {
+    bool operator()(int a, int b) const {
+        return a > b;
+    }
+};
+
+
+int main() {
+    // Set with custom comparator (lexicographical string comparison)
+    std::set<std::string, LexCompare> stringSet;
+    stringSet.insert("apple");
+    stringSet.insert("banana");
+    stringSet.insert("orange");
+
+    std::cout << "String set (lexicographical order): ";
+    for (const auto& str : stringSet) {
+        std::cout << str << " ";
+    }
+    std::cout << std::endl;
+
+
+    // Set with default comparator (less than for integers)
+    std::set<int> intSet;
+    intSet.insert(3);
+    intSet.insert(1);
+    intSet.insert(4);
+    intSet.insert(1); // Duplicate, will only be stored once
+    intSet.insert(5);
+    intSet.insert(9);
+
+    std::cout << "Integer set (default order): ";
+    for (int num : intSet) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Set with custom comparator (greater than for integers)
+    std::set<int, GreaterThan> reverseIntSet;
+    reverseIntSet.insert(3);
+    reverseIntSet.insert(1);
+    reverseIntSet.insert(4);
+    reverseIntSet.insert(1); // Duplicate
+    reverseIntSet.insert(5);
+    reverseIntSet.insert(9);
+
+
+    std::cout << "Integer set (reverse order): ";
+    for (int num : reverseIntSet) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+
+    // Demonstrating comparison operators
+    auto it = intSet.find(4);
+    if (it != intSet.end()) {
+        std::cout << "4 found in intSet" << std::endl;
+        if (*it < 5) {
+            std::cout << "4 is less than 5" << std::endl;
+        }
+        if (*it <= 4) {
+            std::cout << "4 is less than or equal to 4" << std::endl;
+        }
+        if (*it > 1) {
+            std::cout << "4 is greater than 1" << std::endl;
+        }
+        if (*it >= 4) {
+            std::cout << "4 is greater than or equal to 4" << std::endl;
+        }
+        if (*it == 4) {
+            std::cout << "4 is equal to 4" << std::endl;
+        }
+        if (*it != 1) {
+            std::cout << "4 is not equal to 1" << std::endl;
+        }
+    }
+
+
+    return 0;
+}
+```
+
+This program demonstrates:
+
+1. **Custom Comparator Support:** The `stringSet` uses the `LexCompare` struct for lexicographical comparison of strings, and 
+`reverseIntSet` uses `GreaterThan` for reverse order of integers.  
+[1](https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator)[3](https://usaco.guide/silver/custom-cpp-stl)
+
+2. **Default Comparator (`std::less<T>`):** The `intSet` uses the default `std::less<int>` comparator, resulting in ascending 
+order. [2](https://en.cppreference.com/w/cpp/container/set/set)
+
+3. **Comparison Operators:** The code demonstrates the use of all comparison operators (<, <=, >, >=, ==, !=) with elements of 
+the `intSet`. These operators work correctly because `std::set` maintains a sorted order based on its comparator. 
+[1](https://stackoverflow.com/questions/2620862/using-custom-stdset-comparator)
+
+
+
+#include <iostream>
+#include <set>
+#include <string>
+#include <functional>
+
+// Custom comparator (lexicographical string comparison)
+struct LexCompare {
+    bool operator()(const std::string& a, const std::string& b) const {
+        return a < b;
+    }
+};
+
+
+
+int main() {
+    // Set with custom comparator (lexicographical string comparison)
+    std::set<std::string, LexCompare> stringSet;
+    stringSet.insert("apple");
+    stringSet.insert("banana");
+    stringSet.insert("orange");
+
+    std::cout << "String set (lexicographical order): ";
+    for (const auto& str : stringSet) {
+        std::cout << str << " ";
+    }
+    std::cout << std::endl;
+
+
+    // Set with default comparator (less than for integers)
+    std::set<int> intSet;
+    intSet.insert(3);
+    intSet.insert(1);
+    intSet.insert(4);
+    intSet.insert(1); // Duplicate, will only be stored once
+    intSet.insert(5);
+    intSet.insert(9);
+
+    std::cout << "Integer set (default order): ";
+    for (int num : intSet) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+    // Set with std::greater (greater than for integers)
+    std::set<int, std::greater<int>> reverseIntSet; // Using std::greater
+    reverseIntSet.insert(3);
+    reverseIntSet.insert(1);
+    reverseIntSet.insert(4);
+    reverseIntSet.insert(1); // Duplicate
+    reverseIntSet.insert(5);
+    reverseIntSet.insert(9);
+
+
+    std::cout << "Integer set (reverse order): ";
+    for (int num : reverseIntSet) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+
+
+    // Demonstrating comparison operators
+    auto it = intSet.find(4);
+    if (it != intSet.end()) {
+        std::cout << "4 found in intSet" << std::endl;
+        if (*it < 5) {
+            std::cout << "4 is less than 5" << std::endl;
+        }
+        if (*it <= 4) {
+            std::cout << "4 is less than or equal to 4" << std::endl;
+        }
+        if (*it > 1) {
+            std::cout << "4 is greater than 1" << std::endl;
+        }
+        if (*it >= 4) {
+            std::cout << "4 is greater than or equal to 4" << std::endl;
+        }
+        if (*it == 4) {
+            std::cout << "4 is equal to 4" << std::endl;
+        }
+        if (*it != 1) {
+            std::cout << "4 is not equal to 1" << std::endl;
+        }
+    }
+
+
+    return 0;
+}
+
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <string>
+
+class ThrowingClass {
+    std::string data;
+public:
+    // Constructor that throws on specific values
+    ThrowingClass(const std::string& s) : data(s) {
+        if(s == "throw") throw std::runtime_error("Constructor throwing!");
+    }
+    
+    // Copy constructor that throws on specific values
+    ThrowingClass(const ThrowingClass& other) : data(other.data) {
+        if(data == "copy_throw") throw std::runtime_error("Copy throwing!");
+    }
+    
+    // Move constructor - noexcept guarantee
+    ThrowingClass(ThrowingClass&& other) noexcept : data(std::move(other.data)) {}
+    
+    const std::string& getData() const { return data; }
+};
+
+int main() {
+    try {
+        // 1. Basic exception safety with push_back
+        // Time: O(1) amortized, Space: O(1)
+        std::vector<ThrowingClass> vec;
+        vec.push_back(ThrowingClass("normal"));
+        std::cout << "Size after normal push_back: " << vec.size() << std::endl;
+        // Size after normal push_back: 1
+        
+        try {
+            // This will throw
+            vec.push_back(ThrowingClass("throw"));
+        } catch(const std::exception& e) {
+            std::cout << "Caught exception: " << e.what() << "\n"
+                     << "Vector size unchanged: " << vec.size() << std::endl;
+        }
+        // Caught exception: Constructor throwing!
+        // Vector size unchanged: 1
+        
+        // 2. Strong guarantee with insert
+        // Time: O(n), Space: O(n)
+        try {
+            vec.insert(vec.begin(), ThrowingClass("copy_throw"));
+        } catch(const std::exception& e) {
+            std::cout << "Insert failed but vector is intact. Size: " << vec.size() << std::endl;
+            std::cout << "First element data: " << vec[0].getData() << std::endl;
+        }
+        // Insert failed but vector is intact. Size: 1
+        // First element data: normal
+        
+        // 3. Nothrow guarantee with reserve
+        // Time: O(n), Space: O(n)
+        size_t oldCapacity = vec.capacity();
+        vec.reserve(100);  // Cannot throw due to noexcept move constructor
+        std::cout << "Reserve successful. Old capacity: " << oldCapacity 
+                 << ", New capacity: " << vec.capacity() << std::endl;
+        // Reserve successful. Old capacity: 1, New capacity: 100
+        
+        // 4. Exception safety with emplace_back
+        // Time: O(1) amortized, Space: O(1)
+        try {
+            vec.emplace_back("throw");
+        } catch(const std::exception& e) {
+            std::cout << "emplace_back failed but vector is intact. Size: " << vec.size() << std::endl;
+        }
+        // emplace_back failed but vector is intact. Size: 1
+        
+        // 5. Exception safety with resize
+        // Time: O(n), Space: O(n)
+        try {
+            vec.resize(5, ThrowingClass("throw"));
+        } catch(const std::exception& e) {
+            std::cout << "Resize failed but vector is intact. Size: " << vec.size() << std::endl;
+        }
+        // Resize failed but vector is intact. Size: 1
+        
+        // 6. Clear - nothrow guarantee
+        // Time: O(n), Space: O(1)
+        vec.clear();  // Never throws
+        std::cout << "Clear successful. Size: " << vec.size() << std::endl;
+        // Clear successful. Size: 0
+        
+        // 7. Shrink_to_fit - basic guarantee
+        // Time: O(n), Space: O(n)
+        vec.shrink_to_fit();
+        std::cout << "Shrink successful. Capacity: " << vec.capacity() << std::endl;
+        // Shrink successful. Capacity: 0
+        
+    } catch(const std::exception& e) {
+        std::cout << "Unexpected exception: " << e.what() << std::endl;
+    }
+    
+    return 0;
+}
+```
+
+This program demonstrates various exception guarantees in std::vector:
+
+1. Basic Exception Guarantee:
+   - If an exception occurs, no memory is leaked
+   - Container remains in valid but unspecified state
+   - Demonstrated with operations like push_back
+
+2. Strong Exception Guarantee:
+   - If an exception occurs, operation is rolled back
+   - Container remains in the same state as before
+   - Demonstrated with insert operation
+
+3. Nothrow Guarantee:
+   - Operation is guaranteed not to throw
+   - Examples: clear(), move operations with noexcept types
+
+Key Points:
+1. Vector maintains exception safety even when stored objects throw
+2. Move operations must be noexcept for efficient reallocation
+3. Most single-element operations provide strong guarantee
+4. Multiple-element operations typically provide basic guarantee
+5. Operations like clear() and swap() never throw
+
+Notable Operations and their Guarantees:
+- push_back(): Strong guarantee for single element
+- insert(): Strong guarantee for single element
+- reserve(): Nothrow if move constructor is noexcept
+- clear(): Nothrow guarantee
+- resize(): Basic guarantee
+- erase(): Strong guarantee
+
