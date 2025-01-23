@@ -496,3 +496,9 @@ int main()
 	
 	return 0;
 }
+------------------
+//Insert a new node in between a linked list
+ListNode* mid = new ListNode(a);       
+mid->next = temp->next;
+temp->next = mid;
+temp = mid->next;
