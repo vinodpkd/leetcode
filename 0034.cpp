@@ -19,8 +19,7 @@ public:
             auto right = std::upper_bound(nums.begin(),nums.end(),target);
             int j = std::distance(nums.begin(),right);
             j--;
-            std::vector<int> res{i,j};
-            return res;
+            return res{i,j};
         }
     }
 };
