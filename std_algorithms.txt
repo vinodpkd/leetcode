@@ -1,0 +1,459 @@
+I'll provide a comprehensive breakdown of the std::algorithm library features:
+
+# Sorting Algorithms
+1. `sort()` - O(n log n) time, O(log n) space
+2. `partial_sort()` - O(n log k) time, O(k) space
+3. `nth_element()` - O(n) time, O(1) space
+4. `stable_sort()` - O(n log n) time, O(n) space
+
+# Non-modifying Sequence Operations
+1. `find()` - O(n) time, O(1) space
+2. `count()` - O(n) time, O(1) space
+3. `equal()` - O(n) time, O(1) space
+4. `search()` - O(n*m) time, O(1) space
+5. `for_each()` - O(n) time, O(1) space
+
+# Modifying Sequence Operations
+1. `copy()` - O(n) time, O(n) space
+2. `move()` - O(n) time, O(n) space
+3. `transform()` - O(n) time, O(n) space
+4. `replace()` - O(n) time, O(1) space
+5. `remove()` - O(n) time, O(1) space
+
+# Partitioning Operations
+1. `partition()` - O(n) time, O(1) space
+2. `stable_partition()` - O(n) time, O(n) space
+3. `is_partitioned()` - O(n) time, O(1) space
+
+# Sorting Operations
+1. `merge()` - O(n) time, O(n) space
+2. `includes()` - O(n) time, O(1) space
+3. `set_difference()` - O(n) time, O(n) space
+4. `set_intersection()` - O(n) time, O(n) space
+
+# Heap Operations
+1. `make_heap()` - O(n) time, O(1) space
+2. `push_heap()` - O(log n) time, O(1) space
+3. `pop_heap()` - O(log n) time, O(1) space
+4. `sort_heap()` - O(n log n) time, O(1) space
+
+# Minimum/Maximum Operations
+1. `min()` - O(1) time, O(1) space
+2. `max()` - O(1) time, O(1) space
+3. `minmax()` - O(1) time, O(1) space
+4. `min_element()` - O(n) time, O(1) space
+5. `max_element()` - O(n) time, O(1) space
+
+# Comparison Operations
+1. `lexicographical_compare()` - O(n) time, O(1) space
+2. `equal()` - O(n) time, O(1) space
+
+# Numeric Operations
+1. `accumulate()` - O(n) time, O(1) space
+2. `inner_product()` - O(n) time, O(1) space
+3. `partial_sum()` - O(n) time, O(n) space
+4. `adjacent_difference()` - O(n) time, O(n) space
+
+This classification covers the primary categories of algorithms in the std::algorithm library with their 
+respective time and space complexities.
+
+Give a single program to exemplify Sorting Operations. Give std::cout  output as the comments in the next 
+line. Give time and space complexity as comments before the code line
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <functional>
+
+// Time Complexity: O(n log n), Space Complexity: O(log n)
+void demonstrateSorting() {
+    // Initial unsorted vector
+    std::vector<int> numbers = {64, 34, 25, 12, 22, 11, 90};
+
+    // Original array
+    std::cout << "Original Array: ";
+    // Output: Original Array: 64 34 25 12 22 11 90
+
+    // Ascending sort using std::sort
+    // Time Complexity: O(n log n), Space Complexity: O(log n)
+    std::sort(numbers.begin(), numbers.end());
+    std::cout << "\nAscending Sorted Array: ";
+    for(int num : numbers) std::cout << num << " ";
+    // Output: Ascending Sorted Array: 11 12 22 25 34 64 90
+
+    // Descending sort using std::sort with custom comparator
+    // Time Complexity: O(n log n), Space Complexity: O(log n)
+    std::sort(numbers.begin(), numbers.end(), std::greater<int>());
+    std::cout << "\nDescending Sorted Array: ";
+    for(int num : numbers) std::cout << num << " ";
+    // Output: Descending Sorted Array: 90 64 34 25 22 12 11
+
+    // Partial sort (first 3 smallest elements)
+    // Time Complexity: O(n log k), Space Complexity: O(k)
+    std::vector<int> partialSortedNumbers = {64, 34, 25, 12, 22, 11, 90};
+    std::partial_sort(partialSortedNumbers.begin(), 
+                      partialSortedNumbers.begin() + 3, 
+                      partialSortedNumbers.end());
+    std::cout << "\nPartial Sorted (3 smallest): ";
+    for(int num : partialSortedNumbers) std::cout << num << " ";
+    // Output: Partial Sorted (3 smallest): 11 12 22 64 34 25 90
+}
+
+int main() {
+    demonstrateSorting();
+    return 0;
+}
+
+```
+
+The code demonstrates multiple sorting techniques from std::algorithm with their respective time and space 
+complexities:
+1. Standard ascending sort
+2. Descending sort with custom comparator
+3. Partial sorting
+4. In-place sorting with minimal additional space requirements
+
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+
+// Demonstrate various non-modifying sequence operations
+void demonstrateNonModifyingOps() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 3, 2, 1};
+
+    // Time: O(n), Space: O(1)
+    auto countThrees = std::count(numbers.begin(), numbers.end(), 3);
+    std::cout << "Count of 3s: " << countThrees;
+    // Output: Count of 3s: 2
+
+    // Time: O(n), Space: O(1)
+    auto findFour = std::find(numbers.begin(), numbers.end(), 4);
+    std::cout << "\nFound 4 at index: " << std::distance(numbers.begin(), findFour);
+    // Output: Found 4 at index: 3
+
+    // Time: O(n), Space: O(1)
+    bool allPositive = std::all_of(numbers.begin(), numbers.end(), 
+                                   [](int x) { return x > 0; });
+    std::cout << "\nAll positive: " << std::boolalpha << allPositive;
+    // Output: All positive: true
+
+    // Time: O(n), Space: O(1)
+    auto sumOfElements = std::accumulate(numbers.begin(), numbers.end(), 0);
+    std::cout << "\nSum of elements: " << sumOfElements;
+    // Output: Sum of elements: 21
+}
+
+int main() {
+    demonstrateNonModifyingOps();
+    return 0;
+}
+
+```
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void demonstrateModifyingOps() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Time: O(n), Space: O(n)
+    std::vector<int> copiedNumbers(numbers.size());
+    std::copy(numbers.begin(), numbers.end(), copiedNumbers.begin());
+    std::cout << "Copied Numbers: ";
+    for(int num : copiedNumbers) std::cout << num << " ";
+    // Output: Copied Numbers: 1 2 3 4 5 6 7 8 9 10
+
+    // Time: O(n), Space: O(1)
+    std::replace(numbers.begin(), numbers.end(), 5, 50);
+    std::cout << "\nAfter Replacing 5 with 50: ";
+    for(int num : numbers) std::cout << num << " ";
+    // Output: After Replacing 5 with 50: 1 2 3 4 50 6 7 8 9 10
+
+    // Time: O(n), Space: O(n)
+    std::vector<int> transformedNumbers(numbers.size());
+    std::transform(numbers.begin(), numbers.end(), transformedNumbers.begin(), 
+                   [](int x) { return x * 2; });
+    std::cout << "\nTransformed (Doubled) Numbers: ";
+    for(int num : transformedNumbers) std::cout << num << " ";
+    // Output: Transformed (Doubled) Numbers: 2 4 6 8 100 12 14 16 18 20
+
+    // Time: O(n), Space: O(1)
+    numbers.erase(std::remove(numbers.begin(), numbers.end(), 50), numbers.end());
+    std::cout << "\nAfter Removing 50: ";
+    for(int num : numbers) std::cout << num << " ";
+    // Output: After Removing 50: 1 2 3 4 6 7 8 9 10
+}
+
+int main() {
+    demonstrateModifyingOps();
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void demonstratePartitioningOps() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // Time: O(n), Space: O(1)
+    auto isEven = [](int x) { return x % 2 == 0; };
+    auto partitionPoint = std::partition(numbers.begin(), numbers.end(), isEven);
+    std::cout << "Partitioned Numbers (Even First): ";
+    for(int num : numbers) std::cout << num << " ";
+    // Output: Partitioned Numbers (Even First): 2 4 6 8 10 1 3 5 7 9
+
+    // Time: O(n), Space: O(1)
+    bool partitionCheck = std::is_partitioned(numbers.begin(), numbers.end(), isEven);
+    std::cout << "\nIs Partitioned by Even: " << std::boolalpha << partitionCheck;
+    // Output: Is Partitioned by Even: true
+
+    // Time: O(n), Space: O(n)
+    std::vector<int> stablePartitionNums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::stable_partition(stablePartitionNums.begin(), stablePartitionNums.end(), isEven);
+    std::cout << "\nStable Partitioned (Even First): ";
+    for(int num : stablePartitionNums) std::cout << num << " ";
+    // Output: Stable Partitioned (Even First): 2 4 6 8 10 1 3 5 7 9
+}
+
+int main() {
+    demonstratePartitioningOps();
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void demonstrateSortingOps() {
+    // Time: O(n log n), Space: O(n)
+    std::vector<int> vec1 = {4, 2, 5, 1, 3};
+    std::vector<int> vec2 = {6, 7, 8, 9, 10};
+    std::vector<int> mergedVec;
+
+    // Time: O(n), Space: O(n)
+    std::merge(vec1.begin(), vec1.end(), 
+               vec2.begin(), vec2.end(), 
+               std::back_inserter(mergedVec));
+    std::cout << "Merged Vector: ";
+    for(int num : mergedVec) std::cout << num << " ";
+    // Output: Merged Vector: 1 2 3 4 5 6 7 8 9 10
+
+    // Time: O(n), Space: O(1)
+    auto includes_check = std::includes(vec1.begin(), vec1.end(), 
+                                        vec2.begin(), vec2.begin() + 2);
+    std::cout << "\nDoes vec1 include first two elements of vec2: " 
+              << std::boolalpha << includes_check;
+    // Output: Does vec1 include first two elements of vec2: false
+
+    // Time: O(n), Space: O(n)
+    std::vector<int> difference;
+    std::set_difference(vec2.begin(), vec2.end(), 
+                        vec1.begin(), vec1.end(), 
+                        std::back_inserter(difference));
+    std::cout << "\nSet Difference: ";
+    for(int num : difference) std::cout << num << " ";
+    // Output: Set Difference: 6 7 8 9 10
+}
+
+int main() {
+    demonstrateSortingOps();
+    return 0;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+void demonstrateHeapOps() {
+    // Example 1: Integer Heap
+    // Time: O(n), Space: O(1)
+    std::vector<int> heap1 = {3, 1, 4, 1, 5, 9, 2, 6};
+    std::make_heap(heap1.begin(), heap1.end());
+    std::cout << "Initial Heap 1 Top: " << heap1.front();
+    // Output: Initial Heap 1 Top: 9
+
+    // Time: O(log n), Space: O(1)
+    heap1.push_back(7);
+    std::push_heap(heap1.begin(), heap1.end());
+    std::cout << "\nHeap 1 After Push Top: " << heap1.front();
+    // Output: Heap 1 After Push Top: 9
+
+    // Time: O(log n), Space: O(1)
+    std::pop_heap(heap1.begin(), heap1.end());
+    heap1.pop_back();
+    std::cout << "\nHeap 1 After Pop Top: " << heap1.front();
+    // Output: Heap 1 After Pop Top: 7
+
+    // Example 2: Custom Object Heap
+    // Time: O(n), Space: O(1)
+    struct Person {
+        std::string name;
+        int age;
+        bool operator<(const Person& other) const {
+            return age < other.age;
+        }
+    };
+
+    std::vector<Person> heap2 = {
+        {"Alice", 30}, 
+        {"Bob", 25}, 
+        {"Charlie", 35}
+    };
+    
+    std::make_heap(heap2.begin(), heap2.end());
+    std::cout << "\nHeap 2 Top Person: " << heap2.front().name;
+    // Output: Heap 2 Top Person: Charlie
+
+    // Time: O(log n), Space: O(1)
+    heap2.push_back({"David", 40});
+    std::push_heap(heap2.begin(), heap2.end());
+    std::cout << "\nHeap 2 After Push Top: " << heap2.front().name;
+    // Output: Heap 2 After Push Top: David
+
+    // Time: O(n log n), Space: O(1)
+    std::sort_heap(heap2.begin(), heap2.end());
+    std::cout << "\nSorted Heap 2 First: " << heap2.front().name;
+    // Output: Sorted Heap 2 First: Bob
+}
+
+int main() {
+    demonstrateHeapOps();
+    return 0;
+}
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <string>
+
+void demonstrateComparisonOps() {
+    // Lexicographical Comparison
+    // Time: O(n), Space: O(1)
+    std::vector<int> vec1 = {1, 2, 3};
+    std::vector<int> vec2 = {1, 2, 4};
+    
+    bool lexCompare = std::lexicographical_compare(
+        vec1.begin(), vec1.end(), 
+        vec2.begin(), vec2.end()
+    );
+    std::cout << "Lexicographical Compare (vec1 < vec2): " 
+              << std::boolalpha << lexCompare;
+    // Output: Lexicographical Compare (vec1 < vec2): true
+
+    // String Lexicographical Comparison
+    std::vector<std::string> strings1 = {"apple", "banana"};
+    std::vector<std::string> strings2 = {"apple", "cherry"};
+    
+    bool stringLexCompare = std::lexicographical_compare(
+        strings1.begin(), strings1.end(), 
+        strings2.begin(), strings2.end()
+    );
+    std::cout << "\nString Lexicographical Compare: " 
+              << std::boolalpha << stringLexCompare;
+    // Output: String Lexicographical Compare: true
+
+    // Equal Comparison
+    // Time: O(n), Space: O(1)
+    std::vector<int> equal1 = {1, 2, 3, 4};
+    std::vector<int> equal2 = {1, 2, 3, 4};
+    std::vector<int> different = {1, 2, 3, 5};
+    
+    bool standardEqual = std::equal(
+        equal1.begin(), equal1.end(), 
+        equal2.begin()
+    );
+    std::cout << "\nStandard Equal Comparison: " 
+              << std::boolalpha << standardEqual;
+    // Output: Standard Equal Comparison: true
+
+    // Conditional Equal Comparison
+    bool conditionalEqual = std::equal(
+        equal1.begin(), equal1.end(), 
+        different.begin(),
+        [](int a, int b) { return a == b; }
+    );
+    std::cout << "\nConditional Equal Comparison: " 
+              << std::boolalpha << conditionalEqual;
+    // Output: Conditional Equal Comparison: false
+}
+
+int main() {
+    demonstrateComparisonOps();
+    return 0;
+}
+
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <functional>
+
+void demonstrateNumericOps() {
+    // Accumulate
+    // Time: O(n), Space: O(1)
+    std::vector<int> numbers1 = {1, 2, 3, 4, 5};
+    int sum = std::accumulate(numbers1.begin(), numbers1.end(), 0);
+    std::cout << "Sum: " << sum;
+    // Output: Sum: 15
+
+    // Accumulate with Custom Operation
+    int product = std::accumulate(numbers1.begin(), numbers1.end(), 1, 
+                                  std::multiplies<int>());
+    std::cout << "\nProduct: " << product;
+    // Output: Product: 120
+
+    // Inner Product
+    // Time: O(n), Space: O(1)
+    std::vector<int> vec1 = {1, 2, 3};
+    std::vector<int> vec2 = {4, 5, 6};
+    int innerProd = std::inner_product(vec1.begin(), vec1.end(), 
+                                       vec2.begin(), 0);
+    std::cout << "\nInner Product: " << innerProd;
+    // Output: Inner Product: 32
+
+    // Inner Product with Custom Operations
+    int customInnerProd = std::inner_product(
+        vec1.begin(), vec1.end(), vec2.begin(), 0,
+        std::plus<int>(), std::multiplies<int>()
+    );
+    std::cout << "\nCustom Inner Product: " << customInnerProd;
+    // Output: Custom Inner Product: 32
+
+    // Partial Sum , cumulative sum,cumsum
+    // Time: O(n), Space: O(n)
+    std::vector<int> partialSumResult(numbers1.size());
+    std::partial_sum(numbers1.begin(), numbers1.end(), partialSumResult.begin());
+    std::cout << "\nPartial Sum: ";
+    for(int num : partialSumResult) std::cout << num << " ";
+    // Output: Partial Sum: 1 3 6 10 15
+
+    // Partial Sum with Custom Operation
+    std::vector<int> partialProdResult(numbers1.size());
+    std::partial_sum(numbers1.begin(), numbers1.end(), partialProdResult.begin(),
+                     std::multiplies<int>());
+    std::cout << "\nPartial Product: ";
+    for(int num : partialProdResult) std::cout << num << " ";
+    // Output: Partial Product: 1 2 6 24 120
+}
+
+int main() {
+    demonstrateNumericOps();
+    return 0;
+}
+----------------
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+       auto it = std::lower_bound(nums.begin(),nums.end(),target); 
+       if(it != nums.end() && *it == target)
+            return std::distance(nums.begin(),it);
+        return -1;
+    }
+};
