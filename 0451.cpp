@@ -28,3 +28,33 @@ public:
         return w;
     }
 };
+--------------
+class Solution {
+public:
+    string frequencySort(string s) {
+        // Step 1: Count the frequency of each character
+        std::unordered_map<char, int> freqMap;
+        for (char c : s) {
+            freqMap[c]++;
+        }
+
+        // Step 2: Create a vector of characters
+        std::vector<char> chars;
+        for (auto& pair : freqMap) {
+            chars.push_back(pair.first);
+        }
+
+        // Step 3: Sort the characters based on their frequency in descending order
+        std::sort(chars.begin(), chars.end(), [&](char a, char b) {
+            return freqMap[a] > freqMap[b];
+        });
+
+        // Step 4: Build the result string
+        std::string result;
+        for (char c : chars) {
+            result.append(freqMap[c], c); // Append the character 'c' freqMap[c] times
+        }
+
+        return result;
+    }
+};
