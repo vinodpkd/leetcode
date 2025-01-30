@@ -37,3 +37,22 @@ public:
         return "";
     }
 };
+---------------
+    class Solution {
+public:
+    string largestOddNumber(string num) {
+        for(auto it = num.rbegin(); it != num.rend();it++)
+        {
+            //std::string u(1,*it);
+            //int i = std::stoi(u);
+            int i = *it - '0';
+            if(i % 2 == 1)
+            {
+                int j = std::distance(num.rbegin(),it);
+                //string t(num.begin(),num.begin()+num.size()-j);
+                return num.substr(0,num.size()-j);
+            }
+        }
+        return "";
+    }
+};
