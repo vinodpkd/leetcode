@@ -78,3 +78,39 @@ public:
     }
 };
 -----------------
+algo.monster
+    // Create three 9x9 matrices for rows, columns, and sub-boxes respectively.
+        std::vector<std::vector<bool>> rowCheck(9, std::vector<bool>(9, false));
+        std::vector<std::vector<bool>> colCheck(9, std::vector<bool>(9, false));
+        std::vector<std::vector<bool>> subBoxCheck(9, std::vector<bool>(9, false));
+
+        // Traverse the entire board to check each element.
+        for (int row = 0; row < 9; ++row) {
+            for (int col = 0; col < 9; ++col) {
+                // Read the current character.
+                char currentChar = board[row][col];
+              
+                // Skip if the cell is empty (denoted by '.').
+                if (currentChar == '.') continue;
+
+                // Convert char digit to integer index (0 to 8).
+                int num = currentChar - '0' - 1;
+
+                // Calculate sub-box index based on row and column.
+                int subBoxIndex = (row / 3) * 3 + (col / 3);
+
+                // Check if the number has already been used in the current row, column, or sub-box.
+                // If it has, then the Sudoku board is invalid.
+                if (rowCheck[row][num] || colCheck[col][num] || subBoxCheck[subBoxIndex][num]) {
+                    return false;
+                }
+
+                // Mark the number as used in the current row, column, and sub-box.
+                rowCheck[row][num] = true;
+                colCheck[col][num] = true;
+                subBoxCheck[subBoxIndex][num] = true;
+            }
+        }
+
+        // If all checks pass, then the board is valid.
+        return true;
