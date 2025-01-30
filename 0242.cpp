@@ -22,3 +22,38 @@ public:
         return false;
     }
 };
+---------------
+#include <string>
+#include <vector>
+
+class Solution {
+public:
+    bool isAnagram(std::string s, std::string t) {
+        // If the lengths are different, they can't be anagrams
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+        // Create a frequency array for 26 lowercase letters
+        std::vector<int> freq(26, 0);
+
+        // Increment frequency for characters in s
+        for (char c : s) {
+            freq[c - 'a']++;
+        }
+
+        // Decrement frequency for characters in t
+        for (char c : t) {
+            freq[c - 'a']--;
+        }
+
+        // If all frequencies are zero, the strings are anagrams
+        for (int count : freq) {
+            if (count != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+};
