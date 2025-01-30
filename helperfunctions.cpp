@@ -502,3 +502,9 @@ ListNode* mid = new ListNode(a);
 mid->next = temp->next;
 temp->next = mid;
 temp = mid->next;
+
+-------------
+Convert character to integer
+auto it = s.begin();
+int i = *it - '0';
+------------
