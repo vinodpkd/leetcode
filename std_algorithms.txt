@@ -457,3 +457,14 @@ public:
         return -1;
     }
 };
+
+---
+To find all occurences of a number in a vector
+auto it = matrix[i].begin();
+bool flag{false};
+while((it = std::find_if(it,matrix[i].end(),[](int x){return x == 0; })) != matrix[i].end())
+{
+    cols.insert(std::distance(matrix[i].begin(),it));
+    flag = true;
+    it++;
+}
