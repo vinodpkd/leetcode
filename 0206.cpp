@@ -12,6 +12,39 @@
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
+        if(nullptr == head || nullptr == head->next)
+            return head;
+        ListNode* prev_node = nullptr;
+	ListNode* current = head;
+	ListNode* next_node = head->next;
+	//ListNode* next_next = next_node->next;
+	
+	while(true)
+	{
+		current->next = prev_node;
+		prev_node = current;	
+		current = next_node;
+		if(next_node == nullptr) break;
+		next_node = next_node->next;
+	}
+	
+    return prev_node;	
+    }
+};
+---------------------
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
         if(NULL == head || head->next == NULL)
             return head;
         
