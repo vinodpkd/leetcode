@@ -1,0 +1,894 @@
+I'll provide a comprehensive breakdown of std::forward_list functions, categorized by their 
+purpose, along with their time and space complexities.
+
+**Element Access:**
+- `front()` - Returns reference to first element | Time: O(1), Space: O(1)
+
+**Iterators:**
+- `before_begin()` - Returns iterator to before-first element | Time: O(1), Space: O(1)
+- `begin()`, `cbegin()` - Returns iterator to first element | Time: O(1), Space: O(1)
+- `end()`, `cend()` - Returns iterator to past-the-end element | Time: O(1), Space: O(1)
+
+**Capacity:**
+- `empty()` - Checks if container is empty | Time: O(1), Space: O(1)
+- `max_size()` - Returns maximum possible elements | Time: O(1), Space: O(1)
+
+**Modifiers:**
+- `clear()` - Clears the contents | Time: O(n), Space: O(1)
+- `insert_after()` - Inserts elements after position | Time: O(1), Space: O(1)
+- `emplace_after()` - Constructs element in-place after position | Time: O(1), Space: O(1)
+- `erase_after()` - Erases element after position | Time: O(1), Space: O(1)
+- `push_front()` - Adds element to the beginning | Time: O(1), Space: O(1)
+- `emplace_front()` - Constructs element in-place at beginning | Time: O(1), Space: O(1)
+- `pop_front()` - Removes first element | Time: O(1), Space: O(1)
+- `resize()` - Changes container size | Time: O(n), Space: O(1)
+- `swap()` - Swaps contents with another forward_list | Time: O(1), Space: O(1)
+
+**Operations:**
+- `merge()` - Merges two sorted lists | Time: O(n), Space: O(1)
+- `splice_after()` - Moves elements from another forward_list | Time: O(1), Space: O(1)
+- `remove()`, `remove_if()` - Removes elements satisfying criteria | Time: O(n), Space: O(1)
+- `reverse()` - Reverses the order of elements | Time: O(n), Space: O(1)
+- `unique()` - Removes consecutive duplicate elements | Time: O(n), Space: O(1)
+- `sort()` - Sorts the elements | Time: O(n log n), Space: O(log n)
+
+**Allocator:**
+- `get_allocator()` - Returns associated allocator | Time: O(1), Space: O(1)
+
+**Assignment:**
+- `assign()` - Replaces contents | Time: O(n), Space: O(1)
+- `operator=` - Assigns new contents | Time: O(n), Space: O(1)
+
+Key points to note:
+1. Forward_list is optimized for insertion and removal operations from the front
+2. It provides no backward traversal capability
+3. It doesn't provide direct access to size to maintain O(1) splice operations
+4. Memory is saved compared to std::list as it has only forward links
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <memory>
+#include <string>
+
+// Custom allocator for demonstration
+template <typename T>
+class TrackingAllocator {
+    public:
+        using value_type = T;
+        TrackingAllocator() noexcept = default;
+        
+        template <typename U>
+        TrackingAllocator(const TrackingAllocator<U>&) noexcept {}
+
+        T* allocate(std::size_t n) {
+            allocation_count++;
+            return std::allocator<T>().allocate(n);
+        }
+
+        void deallocate(T* p, std::size_t n) noexcept {
+            deallocation_count++;
+            std::allocator<T>().deallocate(p, n);
+        }
+
+        static int allocation_count;
+        static int deallocation_count;
+};
+
+template <typename T>
+int TrackingAllocator<T>::allocation_count = 0;
+
+template <typename T>
+int TrackingAllocator<T>::deallocation_count = 0;
+
+int main() {
+    // Example 1: Basic get_allocator() usage
+    // Time Complexity: O(1) for get_allocator
+    // Space Complexity: O(1) for getting allocator object
+    std::forward_list<int> list1;
+    auto allocator1 = list1.get_allocator();
+    
+    int* temp = allocator1.allocate(1);
+    allocator1.construct(temp, 42);
+    
+    std::cout << "Allocated value: " << *temp << std::endl;
+    // Output: Allocated value: 42
+    
+    allocator1.destroy(temp);
+    allocator1.deallocate(temp, 1);
+
+    // Example 2: Using custom allocator
+    // Time Complexity: O(1) for allocator operations
+    // Space Complexity: O(n) for list storage
+    std::forward_list<int, TrackingAllocator<int>> list2;
+    
+    list2.push_front(1);
+    list2.push_front(2);
+    list2.push_front(3);
+    
+    std::cout << "\nList with custom allocator: ";
+    for(const auto& elem : list2) {
+        std::cout << elem << " ";
+    }
+    std::cout << "\nAllocations: " << TrackingAllocator<int>::allocation_count;
+    std::cout << "\nDeallocations: " << TrackingAllocator<int>::deallocation_count << std::endl;
+    // Output: 
+    // List with custom allocator: 3 2 1
+    // Allocations: 3
+    // Deallocations: 0
+
+    // Example 3: Comparing allocators
+    // Time Complexity: O(1) for allocator operations
+    // Space Complexity: O(1) for comparison
+    std::forward_list<double> list3;
+    std::forward_list<double> list4;
+    
+    auto allocator3 = list3.get_allocator();
+    auto allocator4 = list4.get_allocator();
+    
+    bool are_equal = (allocator3 == allocator4);
+    std::cout << "\nAllocators are equal: " << (are_equal ? "true" : "false") << std::endl;
+    // Output: Allocators are equal: true
+
+    // Clean up - list2 destructor will use custom allocator for cleanup
+    list2.clear();
+    std::cout << "Final deallocations: " << TrackingAllocator<int>::deallocation_count << std::endl;
+    // Output: Final deallocations: 3
+
+    return 0;
+}
+```
+
+This program demonstrates three aspects of allocator usage in std::forward_list:
+
+1. Basic get_allocator() usage
+   - Shows how to get the allocator from a list
+   - Demonstrates manual allocation/deallocation
+   - Shows direct memory management
+
+2. Custom allocator implementation
+   - Shows how to create a tracking allocator
+   - Demonstrates monitoring allocations/deallocations
+   - Shows how allocator integrates with forward_list
+
+3. Allocator comparison
+   - Shows how to compare allocators
+   - Demonstrates allocator equality checking
+   - Shows allocator properties
+
+Key points about forward_list allocators:
+- get_allocator() is always O(1)
+- Custom allocators can be used to track memory usage
+- Allocators must maintain state between operations
+- Standard allocator operations are typically O(1)
+- Allocator type affects the forward_list's type
+
+Note that allocators are typically used internally by the container, and direct use of allocator 
+methods is rare in normal code. The examples above are primarily for demonstration purposes.
+
+The comments in the code show the expected output at each stage of execution.
+
+```cpp
+#include <iostream>
+#include <forward_list>
+
+int main() {
+    // Create a forward list
+    std::forward_list<int> list = {10, 20, 30, 40, 50};
+
+    // Time Complexity: O(1) - Constant time to access front element
+    // Space Complexity: O(1) - No extra space needed
+    
+    // Example 1: Basic front() access
+    int first_element = list.front();
+    std::cout << "First element: " << first_element << std::endl;
+    // Output: First element: 10
+    
+    // Example 2: Modifying front element using reference
+    list.front() = 100;
+    std::cout << "Modified first element: " << list.front() << std::endl;
+    // Output: Modified first element: 100
+    
+    // Example 3: Accessing front element of empty list (unsafe)
+    std::forward_list<int> empty_list;
+    try {
+        // It's good practice to check if list is empty before accessing front
+        if (!empty_list.empty()) {
+            std::cout << empty_list.front() << std::endl;
+        } else {
+            std::cout << "List is empty!" << std::endl;
+        }
+    } catch (const std::exception& e) {
+        std::cout << "Exception caught: " << e.what() << std::endl;
+    }
+    // Output: List is empty!
+
+    return 0;
+}
+```
+
+This program demonstrates three different ways to use the element access functionality in 
+std::forward_list:
+
+1. Basic access of the front element using front()
+2. Modifying the front element by using front() as an lvalue
+3. Safe handling of front() with empty lists using error checking
+
+Key points about this program:
+- The front() method is the only direct element access method available in forward_list
+- Always check if the list is empty before accessing front() in production code
+- All front() operations are O(1) in both time and space complexity
+- Unlike vector or list, forward_list doesn't provide access to other positions directly
+
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <string>
+
+int main() {
+    // Create a forward list
+    std::forward_list<std::string> languages = {"Python", "C++", "Java", "JavaScript"};
+
+    // Example 1: Using begin() and end()
+    // Time Complexity: O(n) for traversal
+    // Space Complexity: O(1) for iterator creation
+    std::cout << "All programming languages:" << std::endl;
+    for (auto it = languages.begin(); it != languages.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    // Output: All programming languages:
+    // Python C++ Java JavaScript
+
+    // Example 2: Using before_begin() for insertion
+    // Time Complexity: O(1) for before_begin() and insertion
+    // Space Complexity: O(1) for iterator creation
+    auto pos = languages.before_begin();
+    languages.insert_after(pos, "Ruby");
+    
+    std::cout << "\n\nAfter inserting Ruby at the beginning:" << std::endl;
+    for (const auto& lang : languages) {
+        std::cout << lang << " ";
+    }
+    // Output: After inserting Ruby at the beginning:
+    // Ruby Python C++ Java JavaScript
+
+    // Example 3: Using cbegin() and cend() for const iteration
+    // Time Complexity: O(n) for traversal
+    // Space Complexity: O(1) for iterator creation
+    std::cout << "\n\nUsing constant iterators:" << std::endl;
+    std::forward_list<std::string>::const_iterator cit;
+    for (cit = languages.cbegin(); cit != languages.cend(); ++cit) {
+        // Following line would cause compilation error as cit is const:
+        // *cit = "New Value";
+        std::cout << *cit << " ";
+    }
+    // Output: Using constant iterators:
+    // Ruby Python C++ Java JavaScript
+
+    return 0;
+}
+```
+
+This program demonstrates three key iterator functionalities in std::forward_list:
+
+1. Basic iteration using begin() and end()
+   - Shows how to traverse the list from start to finish
+   - Uses auto for iterator type deduction
+
+2. Using before_begin() for insertion
+   - Demonstrates the special before_begin() iterator
+   - Shows how to insert elements at the beginning
+   - Important because forward_list requires a position before insertion point
+
+3. Const iteration using cbegin() and cend()
+   - Shows how to create read-only iterators
+   - Prevents accidental modification of elements
+   - Good practice for const correctness
+
+Key points about forward_list iterators:
+- They are forward iterators only (can't move backwards)
+- before_begin() is unique to forward_list
+- Const iterators provide safe, read-only access
+- All iterator creation operations are O(1)
+- Traversal operations are O(n) when going through the whole list
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <climits>
+
+int main() {
+    // Example 1: Using empty()
+    // Time Complexity: O(1) - Constant time check
+    // Space Complexity: O(1) - No extra space needed
+    std::forward_list<int> list1;
+    std::forward_list<int> list2 = {1, 2, 3};
+    
+    std::cout << "List1 is empty: " << (list1.empty() ? "true" : "false") << std::endl;
+    std::cout << "List2 is empty: " << (list2.empty() ? "true" : "false") << std::endl;
+    // Output: 
+    // List1 is empty: true
+    // List2 is empty: false
+
+    // Example 2: Using max_size()
+    // Time Complexity: O(1) - Returns stored/computed value
+    // Space Complexity: O(1) - No extra space needed
+    std::forward_list<int> list3;
+    std::forward_list<char> list4;
+    
+    std::cout << "\nMaximum size for int list: " << list3.max_size() << std::endl;
+    std::cout << "Maximum size for char list: " << list4.max_size() << std::endl;
+    // Output (values may vary by system):
+    // Maximum size for int list: 461168601842738790
+    // Maximum size for char list: 1844674407370955161
+
+    // Example 3: Practical use of empty() with operations
+    // Time Complexity: O(1) for empty check, O(1) for push_front
+    // Space Complexity: O(1) - Constant extra space
+    std::forward_list<double> list5;
+    
+    // Safe operations using empty()
+    if (list5.empty()) {
+        list5.push_front(1.0);
+        std::cout << "\nAdded first element to empty list" << std::endl;
+    }
+    
+    if (!list5.empty()) {
+        list5.push_front(2.0);
+        std::cout << "Added second element to non-empty list" << std::endl;
+    }
+    
+    std::cout << "Final list contents: ";
+    for (const auto& elem : list5) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+    // Output:
+    // Added first element to empty list
+    // Added second element to non-empty list
+    // Final list contents: 2 1
+
+    return 0;
+}
+```
+
+This program demonstrates all available capacity member functions in std::forward_list:
+
+1. empty()
+   - Shows basic empty check on different lists
+   - Demonstrates how it works with both empty and non-empty lists
+   - Most commonly used capacity function
+
+2. max_size()
+   - Shows maximum theoretical size for different types
+   - Demonstrates how max size varies by element type
+   - Values are system/implementation dependent
+
+3. Practical usage combining empty() with operations
+   - Shows how to use empty() for safe operations
+   - Demonstrates practical application in real code
+   - Shows how to combine with other list operations
+
+Key points about forward_list capacity:
+- Unlike other containers, forward_list doesn't have size()
+- This is intentional to maintain O(1) splice operations
+- All capacity operations are O(1) in both time and space
+- max_size() is theoretical and may not be achievable in practice
+- empty() is commonly used for validation before operations
+
+Note that forward_list is intentionally minimalist in its capacity interface to maintain 
+efficiency for its primary use cases. If you need size information, consider using std::list 
+instead.
+
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <string>
+
+int main() {
+    // Example 1: push_front(), pop_front(), and clear()
+    // Time Complexity: O(1) for push_front and pop_front, O(n) for clear
+    // Space Complexity: O(1) for all operations
+    std::forward_list<int> list1;
+    
+    list1.push_front(30);
+    list1.push_front(20);
+    list1.push_front(10);
+    
+    std::cout << "List1 after push_front operations: ";
+    for (const auto& num : list1) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+    // Output: List1 after push_front operations: 10 20 30
+
+    list1.pop_front();
+    std::cout << "After pop_front: ";
+    for (const auto& num : list1) {
+        std::cout << num << " ";
+    }
+    std::cout << std::endl;
+    // Output: After pop_front: 20 30
+
+    list1.clear();
+    std::cout << "After clear, list is empty: " << (list1.empty() ? "true" : "false") << std::endl;
+    // Output: After clear, list is empty: true
+
+    // Example 2: insert_after() and erase_after()
+    // Time Complexity: O(1) for both operations
+    // Space Complexity: O(1) for both operations
+    std::forward_list<std::string> list2 = {"apple", "banana", "cherry"};
+    
+    auto it = list2.begin();
+    list2.insert_after(it, "blueberry");  // Insert after "apple"
+    
+    std::cout << "\nList2 after insert_after: ";
+    for (const auto& fruit : list2) {
+        std::cout << fruit << " ";
+    }
+    std::cout << std::endl;
+    // Output: List2 after insert_after: apple blueberry banana cherry
+
+    it = list2.begin();  // Points to "apple"
+    list2.erase_after(it);  // Removes "blueberry"
+    
+    std::cout << "After erase_after: ";
+    for (const auto& fruit : list2) {
+        std::cout << fruit << " ";
+    }
+    std::cout << std::endl;
+    // Output: After erase_after: apple banana cherry
+
+    // Example 3: resize() and emplace_front()
+    // Time Complexity: O(n) for resize, O(1) for emplace_front
+    // Space Complexity: O(1) for both operations
+    std::forward_list<std::pair<int, std::string>> list3;
+    
+    // Using emplace_front to construct elements in-place
+    list3.emplace_front(1, "one");
+    list3.emplace_front(2, "two");
+    
+    std::cout << "\nList3 after emplace_front: ";
+    for (const auto& pair : list3) {
+        std::cout << "(" << pair.first << "," << pair.second << ") ";
+    }
+    std::cout << std::endl;
+    // Output: List3 after emplace_front: (2,two) (1,one)
+
+    // Resize to size 4 (adds two elements with default values)
+    list3.resize(4, std::make_pair(0, "zero"));
+    
+    std::cout << "After resize to 4: ";
+    for (const auto& pair : list3) {
+        std::cout << "(" << pair.first << "," << pair.second << ") ";
+    }
+    std::cout << std::endl;
+    // Output: After resize to 4: (2,two) (1,one) (0,zero) (0,zero)
+
+    return 0;
+}
+```
+
+This program demonstrates three groups of modifier operations in std::forward_list:
+
+1. Basic modifiers: push_front(), pop_front(), clear()
+   - Shows how to add and remove elements from the front
+   - Demonstrates clearing the entire list
+   - All operations are efficient (O(1)) except clear()
+
+2. Position-based modifiers: insert_after(), erase_after()
+   - Shows how to insert and remove elements at specific positions
+   - Demonstrates the importance of the "after" position in forward_list
+   - Both operations are O(1)
+
+3. Advanced modifiers: resize() and emplace_front()
+   - Shows in-place construction using emplace_front()
+   - Demonstrates resizing with default values
+   - Combines multiple modifiers for complex operations
+
+Key points about forward_list modifiers:
+- All single-element operations are O(1)
+- Operations that affect multiple elements (clear, resize) are O(n)
+- Position-based operations require an iterator to the previous element
+- emplace_front() is more efficient than push_front() for complex objects
+
+The comments in the code show the expected output at each stage of execution.
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <string>
+
+void printList(const std::forward_list<int>& list, const std::string& msg) {
+    std::cout << msg;
+    for (const auto& elem : list) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Example 1: merge() operation
+    // Time Complexity: O(n) where n is total number of elements
+    // Space Complexity: O(1) as it's in-place merge
+    std::forward_list<int> list1 = {1, 3, 5, 7};
+    std::forward_list<int> list2 = {2, 4, 6, 8};
+    
+    printList(list1, "List1 before merge: ");
+    printList(list2, "List2 before merge: ");
+    // Output:
+    // List1 before merge: 1 3 5 7
+    // List2 before merge: 2 4 6 8
+    
+    list1.merge(list2);
+    printList(list1, "After merge: ");
+    printList(list2, "List2 after merge (empty): ");
+    // Output:
+    // After merge: 1 2 3 4 5 6 7 8
+    // List2 after merge (empty):
+
+    // Example 2: remove(), remove_if() and unique()
+    // Time Complexity: O(n) for traversing all elements
+    // Space Complexity: O(1) as operations are in-place
+    std::forward_list<int> list3 = {1, 2, 2, 3, 3, 3, 4, 4, 4, 4};
+    
+    printList(list3, "\nOriginal list with duplicates: ");
+    // Output:
+    // Original list with duplicates: 1 2 2 3 3 3 4 4 4 4
+    
+    list3.remove(2);  // Remove all 2s
+    printList(list3, "After removing 2s: ");
+    // Output:
+    // After removing 2s: 1 3 3 3 4 4 4 4
+    
+    // Remove all numbers greater than 3
+    list3.remove_if([](int n) { return n > 3; });
+    printList(list3, "After removing numbers > 3: ");
+    // Output:
+    // After removing numbers > 3: 1 3 3 3
+    
+    list3.unique();  // Remove consecutive duplicates
+    printList(list3, "After unique(): ");
+    // Output:
+    // After unique(): 1 3
+
+    // Example 3: sort() and reverse()
+    // Time Complexity: O(n log n) for sort, O(n) for reverse
+    // Space Complexity: O(log n) for sort, O(1) for reverse
+    std::forward_list<int> list4 = {5, 2, 8, 1, 9, 3, 7, 4, 6};
+    
+    printList(list4, "\nOriginal unsorted list: ");
+    // Output:
+    // Original unsorted list: 5 2 8 1 9 3 7 4 6
+    
+    list4.sort();
+    printList(list4, "After sort: ");
+    // Output:
+    // After sort: 1 2 3 4 5 6 7 8 9
+    
+    list4.reverse();
+    printList(list4, "After reverse: ");
+    // Output:
+    // After reverse: 9 8 7 6 5 4 3 2 1
+
+    return 0;
+}
+```
+
+This program demonstrates three groups of operations in std::forward_list:
+
+1. merge() operation
+   - Shows how to merge two sorted lists
+   - Demonstrates that source list becomes empty after merge
+   - Requires both lists to be sorted beforehand
+
+2. remove(), remove_if(), and unique() operations
+   - Shows different ways to remove elements
+   - Demonstrates predicate-based removal
+   - Shows how to remove consecutive duplicates
+
+3. sort() and reverse() operations
+   - Shows basic sorting functionality
+   - Demonstrates list reversal
+   - Shows how these operations can be combined
+
+Key points about forward_list operations:
+- Most operations modify the list in-place
+- merge() requires sorted lists as input
+- unique() only removes consecutive duplicates
+- sort() uses a stable sorting algorithm
+- All operations maintain the forward_list's memory efficiency
+- splice_after() (not shown) is O(1) and one of forward_list's key advantages
+
+The comments in the code show the expected output at each stage of the program's execution.
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <string>
+
+void printList(const std::forward_list<int>& list, const std::string& msg) {
+    std::cout << msg;
+    for (const auto& elem : list) {
+        std::cout << elem << " ";
+    }
+    std::cout << std::endl;
+}
+
+int main() {
+    // Example 1: splice_after() - moving entire list
+    // Time Complexity: O(1) for the splice operation
+    // Space Complexity: O(1) as it's just pointer manipulation
+    std::forward_list<int> list1 = {1, 2, 3};
+    std::forward_list<int> list2 = {4, 5, 6};
+    
+    printList(list1, "List1 before splice: ");
+    printList(list2, "List2 before splice: ");
+    // Output:
+    // List1 before splice: 1 2 3
+    // List2 before splice: 4 5 6
+    
+    list1.splice_after(list1.begin(), list2);
+    printList(list1, "List1 after splice: ");
+    printList(list2, "List2 after splice (empty): ");
+    // Output:
+    // List1 after splice: 1 4 5 6 2 3
+    // List2 after splice (empty):
+
+    // Example 2: splice_after() - moving single element
+    // Time Complexity: O(1) for single element splice
+    // Space Complexity: O(1) for pointer manipulation
+    std::forward_list<int> list3 = {10, 20, 30, 40};
+    std::forward_list<int> list4 = {50, 60, 70, 80};
+    
+    auto pos = list3.begin(); // points to 10
+    auto from = list4.begin(); // points to 50
+    
+    printList(list3, "\nList3 before single element splice: ");
+    printList(list4, "List4 before single element splice: ");
+    // Output:
+    // List3 before single element splice: 10 20 30 40
+    // List4 before single element splice: 50 60 70 80
+    
+    list3.splice_after(pos, list4, from);  // splices 60 after 10
+    printList(list3, "List3 after single element splice: ");
+    printList(list4, "List4 after single element splice: ");
+    // Output:
+    // List3 after single element splice: 10 60 20 30 40
+    // List4 after single element splice: 50 70 80
+
+    // Example 3: splice_after() - moving range of elements
+    // Time Complexity: O(1) for the splice operation itself
+    // Space Complexity: O(1) as it's just pointer manipulation
+    std::forward_list<int> list5 = {100, 200, 300};
+    std::forward_list<int> list6 = {400, 500, 600, 700, 800};
+    
+    auto start = list6.begin(); // points to 400
+    auto end = std::next(start, 2); // points to 600
+    
+    printList(list5, "\nList5 before range splice: ");
+    printList(list6, "List6 before range splice: ");
+    // Output:
+    // List5 before range splice: 100 200 300
+    // List6 before range splice: 400 500 600 700 800
+    
+    list5.splice_after(list5.begin(), list6, start, end);
+    printList(list5, "List5 after range splice: ");
+    printList(list6, "List6 after range splice: ");
+    // Output:
+    // List5 after range splice: 100 500 600 200 300
+    // List6 after range splice: 400 700 800
+
+    return 0;
+}
+```
+
+This program demonstrates three different ways to use splice_after() in std::forward_list:
+
+1. Moving an entire list
+   - Shows how to splice a complete list after a position
+   - Demonstrates that source list becomes empty
+   - Most basic form of splice_after()
+
+2. Moving a single element
+   - Shows how to splice one element from source to destination
+   - Demonstrates precise element placement
+   - Uses iterators to specify locations
+
+3. Moving a range of elements
+   - Shows how to splice a range of elements
+   - Demonstrates using start and end iterators
+   - Shows how source list retains non-spliced elements
+
+Key points about splice_after():
+- Always O(1) operation regardless of number of elements moved
+- No memory allocation/deallocation occurs
+- Source elements are moved, not copied
+- Three versions available:
+  * Entire list splice
+  * Single element splice
+  * Range splice
+- One of forward_list's most efficient operations
+- Maintains valid iterators to spliced elements
+
+This is one of the main advantages of forward_list over other containers, as splicing operations 
+are guaranteed to be O(1).
+
+```cpp
+#include <iostream>
+#include <forward_list>
+#include <memory>
+#include <string>
+
+// Custom allocator for demonstration
+template <typename T>
+class TrackingAllocator {
+    public:
+        using value_type = T;
+        TrackingAllocator() noexcept = default;
+        
+        template <typename U>
+        TrackingAllocator(const TrackingAllocator<U>&) noexcept {}
+
+        T* allocate(std::size_t n) {
+            allocation_count++;
+            return std::allocator<T>().allocate(n);
+        }
+
+        void deallocate(T* p, std::size_t n) noexcept {
+            deallocation_count++;
+            std::allocator<T>().deallocate(p, n);
+        }
+
+        static int allocation_count;
+        static int deallocation_count;
+};
+
+template <typename T>
+int TrackingAllocator<T>::allocation_count = 0;
+
+template <typename T>
+int TrackingAllocator<T>::deallocation_count = 0;
+
+int main() {
+    // Example 1: Basic get_allocator() usage
+    // Time Complexity: O(1) for get_allocator
+    // Space Complexity: O(1) for getting allocator object
+    std::forward_list<int> list1;
+    auto allocator1 = list1.get_allocator();
+    
+    int* temp = allocator1.allocate(1);
+    allocator1.construct(temp, 42);
+    
+    std::cout << "Allocated value: " << *temp << std::endl;
+    // Output: Allocated value: 42
+    
+    allocator1.destroy(temp);
+    allocator1.deallocate(temp, 1);
+
+    // Example 2: Using custom allocator
+    // Time Complexity: O(1) for allocator operations
+    // Space Complexity: O(n) for list storage
+    std::forward_list<int, TrackingAllocator<int>> list2;
+    
+    list2.push_front(1);
+    list2.push_front(2);
+    list2.push_front(3);
+    
+    std::cout << "\nList with custom allocator: ";
+    for(const auto& elem : list2) {
+        std::cout << elem << " ";
+    }
+    std::cout << "\nAllocations: " << TrackingAllocator<int>::allocation_count;
+    std::cout << "\nDeallocations: " << TrackingAllocator<int>::deallocation_count << std::endl;
+    // Output: 
+    // List with custom allocator: 3 2 1
+    // Allocations: 3
+    // Deallocations: 0
+
+    // Example 3: Comparing allocators
+    // Time Complexity: O(1) for allocator operations
+    // Space Complexity: O(1) for comparison
+    std::forward_list<double> list3;
+    std::forward_list<double> list4;
+    
+    auto allocator3 = list3.get_allocator();
+    auto allocator4 = list4.get_allocator();
+    
+    bool are_equal = (allocator3 == allocator4);
+    std::cout << "\nAllocators are equal: " << (are_equal ? "true" : "false") << std::endl;
+    // Output: Allocators are equal: true
+
+    // Clean up - list2 destructor will use custom allocator for cleanup
+    list2.clear();
+    std::cout << "Final deallocations: " << TrackingAllocator<int>::deallocation_count << std::endl;
+    // Output: Final deallocations: 3
+
+    return 0;
+}
+```
+
+This program demonstrates three aspects of allocator usage in std::forward_list:
+
+1. Basic get_allocator() usage
+   - Shows how to get the allocator from a list
+   - Demonstrates manual allocation/deallocation
+   - Shows direct memory management
+
+2. Custom allocator implementation
+   - Shows how to create a tracking allocator
+   - Demonstrates monitoring allocations/deallocations
+   - Shows how allocator integrates with forward_list
+
+3. Allocator comparison
+   - Shows how to compare allocators
+   - Demonstrates allocator equality checking
+   - Shows allocator properties
+
+Key points about forward_list allocators:
+- get_allocator() is always O(1)
+- Custom allocators can be used to track memory usage
+- Allocators must maintain state between operations
+- Standard allocator operations are typically O(1)
+- Allocator type affects the forward_list's type
+
+Note that allocators are typically used internally by the container, and direct use of allocator 
+methods is rare in normal code. The examples above are primarily for demonstration purposes.
+
+Here’s a C++ program that demonstrates three examples of assignments related to 
+`std::forward_list`. The time and space complexity are provided as comments above each assignment, 
+and the `std::cout` statements are included as comments below each assignment.
+
+```cpp
+#include <iostream>
+#include <forward_list>
+
+int main() {
+    // Example 1: Assigning a forward_list using initializer list
+    // Time Complexity: O(n), where n is the number of elements in the initializer list
+    // Space Complexity: O(n), where n is the number of elements in the initializer list
+    std::forward_list<int> list1 = {1, 2, 3, 4, 5};
+    // std::cout << "List1: ";
+    // for (int i : list1) {
+    //     std::cout << i << " ";
+    // }
+    // std::cout << std::endl;
+
+    // Example 2: Assigning one forward_list to another (copy assignment)
+    // Time Complexity: O(n), where n is the number of elements in the source list
+    // Space Complexity: O(n), where n is the number of elements in the source list
+    std::forward_list<int> list2 = list1;
+    // std::cout << "List2 (copy of List1): ";
+    // for (int i : list2) {
+    //     std::cout << i << " ";
+    // }
+    // std::cout << std::endl;
+
+    // Example 3: Assigning a forward_list using the assign() method
+    // Time Complexity: O(n), where n is the number of elements in the new range
+    // Space Complexity: O(n), where n is the number of elements in the new range
+    list2.assign({10, 20, 30});
+    // std::cout << "List2 after assign(): ";
+    // for (int i : list2) {
+    //     std::cout << i << " ";
+    // }
+    // std::cout << std::endl;
+
+    return 0;
+}
+```
+
+### Explanation:
+1. **Example 1**: Assigning a `std::forward_list` using an initializer list. This requires 
+iterating over the initializer list and inserting elements into the `forward_list`, resulting in 
+linear time and space complexity.
+2. **Example 2**: Assigning one `std::forward_list` to another (copy assignment). This involves 
+copying all elements from the source list to the destination list, resulting in linear time and 
+space complexity.
+3. **Example 3**: Assigning a `std::forward_list` using the `assign()` method. This replaces the 
+contents of the list with a new range of elements, resulting in linear time and space complexity.
+
+The `std::cout` statements are commented out but can be uncommented to print the contents of the 
+lists to the console.
