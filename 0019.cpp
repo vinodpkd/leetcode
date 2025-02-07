@@ -1,3 +1,57 @@
+19. Remove Nth Node From End of List
+//Given the head of a linked list, remove the nth node from the end of the list and return its head./**
+
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        if(head->next == nullptr && n == 1)
+            return nullptr;
+        ListNode* first = head;
+	ListNode* second = head;
+	
+	int i = 0;
+	
+	while(i < n)
+	{
+		second = second->next;
+		i++;
+	}
+	
+	//std::cout << first->val << '\n';
+	//std::cout << second->val << '\n';
+	
+	if(nullptr == second)
+	{
+		ListNode* temp = head;
+		head = head->next;
+		delete temp;
+		return head;
+	}
+	
+	while(second->next)
+	{
+		first = first->next;
+		second = second->next;
+	}
+	
+	//std::cout << first->val << '\n';
+	ListNode* temp = first->next;
+	first->next = first->next->next;
+	delete temp;
+	//printLL(n1);
+    return head;
+    }
+};
+----------
 #include <iostream>
 
 struct ListNode {
