@@ -1,4 +1,4 @@
-19. Remove Nth Node From End of List
+19. Remove Nth Node From End of List 100% beats in time.
 //Given the head of a linked list, remove the nth node from the end of the list and return its head./**
 
  * Definition for singly-linked list.
@@ -51,6 +51,21 @@ public:
     return head;
     }
 };
+/*
+	I have made an alternate method to delete the Kth node from the end.
+	I got the idea from the book. I implemented on my own.
+	Key idea : Two pointers 
+	Initially both first and second node point to head.
+	Advance second node k times. 
+	Now there will be k-1 node in between first and second.
+	If second points to last node or second->next point to nullptr, 
+	first points to the K+1 st node from the end.
+	The node pointed by first->next has to be deleted.
+	What if second points to nullptr?
+	head has to be deleted.Why?
+	Why?
+	
+	*/
 ----------
 #include <iostream>
 
