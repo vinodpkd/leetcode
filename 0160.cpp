@@ -31,3 +31,40 @@ public:
         return nullptr;
     }
 };
+
+--------------
+Python code to prove the concatenation of two lists
+from random import sample
+from copy import deepcopy
+
+NN = 100
+MM = 30
+
+for i in range(100):
+
+    m = sample(range(10,MM),1)[0]
+    n = sample(range(10,MM),1)[0]
+    p = sample(range(10,MM),1)[0]
+    
+    a = sample(range(NN),m)
+    b = sample(range(NN),n)
+    c = sample(range(NN),p)
+
+    a.extend(c)
+    b.extend(c)
+
+    d = deepcopy(a)
+    e = deepcopy(b)
+
+    d.extend(b)
+    e.extend(a)
+
+    assert(len(d) == len(e))
+
+    for i in range(p):
+        assert(d[len(d)-1-i] == e[len(e)-1-i])
+        
+        
+    
+
+
