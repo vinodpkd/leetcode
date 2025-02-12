@@ -316,4 +316,22 @@ int main()
 	
 	return 0;
 }
+--------------------
+//Using forward_list in C++ STL
+std::forward_list<int> fl{1,2,3,4,5,6};
+	
+int k = 2;
 
+auto it = fl.begin();
+int d = std::distance(fl.begin(),fl.end());
+std::cout << d << '\n';	
+
+for(int i = 1;i < (d-k);i++)
+{it++;}
+
+fl.erase_after(it);
+
+for(auto it = fl.begin();it != fl.end();it++)
+{
+	std::cout << *it << '\n';
+}
