@@ -10,3 +10,11 @@ public:
         return __builtin_popcount(n);
     }
 };
+
+class Solution {
+public:
+    int hammingWeight(int n) {
+        std::bitset<32> b(n);
+        return b.count();
+    }
+};
