@@ -10,3 +10,15 @@ public:
         
     }
 };
+
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+       std::bitset<32> result;
+    for (int num : nums) {
+        result ^= std::bitset<32>(num);
+    }
+    // Convert back considering sign
+    return static_cast<int>(result.to_ulong()); 
+    }
+};
