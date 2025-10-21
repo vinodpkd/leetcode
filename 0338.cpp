@@ -13,3 +13,16 @@ public:
         return bits;
     }
 };
+
+class Solution {
+public:
+    vector<int> countBits(int n) {
+        vector<int> a{};
+        for(int i = 0;i <= n;i++)
+        {
+            std::bitset<32> b(i);
+            a.push_back(b.count());
+        }
+        return a;
+    }
+};
